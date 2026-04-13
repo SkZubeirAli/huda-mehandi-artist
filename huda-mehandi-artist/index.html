@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Huda — Mehndi Artist</title>
+  <meta name="description" content="Huda — Professional Mehndi Artist in Mumbai. Bridal, Arabic, Festive &amp; Custom Henna designs."/>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Dancing+Script:wght@500;700&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet"/>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ══ PROGRESS BAR ══ -->
+<div id="progress-bar"></div>
+
+<!-- ══ TOASTER ══ -->
+<div id="toaster"></div>
+
+<!-- ══ LOADER ══ -->
+<div id="loader">
+  <div class="loader-glow"></div>
+  <div id="loader-svg-wrap">
+    <!-- Henna Hand SVG (drawn stroke by stroke) -->
+    <svg id="henna-hand"
+         viewBox="0 0 350 440"
+         xmlns="http://www.w3.org/2000/svg"
+         style="width:220px;height:260px;">
+      <!-- Hand outline -->
+      <path d="M175,420 C120,415 75,380 60,340 C45,300 50,255 55,220
+               C45,210 35,195 38,178 C41,162 56,155 68,162
+               C62,148 60,130 68,118 C76,106 92,104 102,115
+               C100,100 102,82 114,74 C126,66 140,72 146,86
+               C148,72 154,58 168,54 C182,50 194,62 196,78
+               L198,78 C200,64 210,52 224,50 C238,48 248,62 246,80
+               C256,70 268,68 278,76 C288,84 288,100 282,114
+               C294,112 306,118 310,132 C314,146 306,160 296,166
+               C302,180 302,196 294,208
+               C298,240 308,280 302,318
+               C296,356 268,392 235,408 C215,418 195,422 175,420Z"
+            stroke="#c9963b" stroke-width="2.5" fill="rgba(201,150,59,0.06)"/>
+      <!-- Finger lines -->
+      <path d="M68,162 C70,148 72,134 74,120 M102,115 C104,100 104,84 106,70
+               M146,86 C148,70 150,54 152,40 M196,78 C196,62 198,46 200,32
+               M246,80 C246,64 244,48 242,34 M282,114 C282,100 280,86 276,74"
+            stroke="#c9963b" stroke-width="1.8"/>
+      <!-- Central mandala on palm -->
+      <circle cx="175" cy="280" r="45" stroke="#c9963b" stroke-width="1.5" fill="none"/>
+      <circle cx="175" cy="280" r="30" stroke="#c9963b" stroke-width="1.2" fill="none"/>
+      <circle cx="175" cy="280" r="12" stroke="#c9963b" stroke-width="1" fill="none"/>
+      <circle cx="175" cy="280" r="4"  fill="#c9963b" stroke="none"/>
+      <!-- Mandala petals -->
+      <ellipse cx="175" cy="235" rx="8" ry="16" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)"/>
+      <ellipse cx="175" cy="235" rx="8" ry="16" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)" transform="rotate(45 175 280)"/>
+      <ellipse cx="175" cy="235" rx="8" ry="16" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)" transform="rotate(90 175 280)"/>
+      <ellipse cx="175" cy="235" rx="8" ry="16" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)" transform="rotate(135 175 280)"/>
+      <ellipse cx="175" cy="235" rx="8" ry="16" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)" transform="rotate(180 175 280)"/>
+      <ellipse cx="175" cy="235" rx="8" ry="16" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)" transform="rotate(225 175 280)"/>
+      <ellipse cx="175" cy="235" rx="8" ry="16" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)" transform="rotate(270 175 280)"/>
+      <ellipse cx="175" cy="235" rx="8" ry="16" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)" transform="rotate(315 175 280)"/>
+      <!-- Vine details on fingers -->
+      <path d="M100,200 Q120,185 140,200 Q160,215 180,200" stroke="#c9963b" stroke-width="1.2" fill="none"/>
+      <path d="M210,195 Q230,180 248,195" stroke="#c9963b" stroke-width="1.2" fill="none"/>
+      <!-- Small leaf motifs -->
+      <ellipse cx="120" cy="340" rx="12" ry="6" transform="rotate(-30 120 340)" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)"/>
+      <ellipse cx="228" cy="335" rx="12" ry="6" transform="rotate(30 228 335)" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)"/>
+      <ellipse cx="175" cy="380" rx="14" ry="7" stroke="#c9963b" stroke-width="1" fill="rgba(201,150,59,0.15)"/>
+      <!-- Nail details -->
+      <path d="M65,122 Q68,112 74,120" stroke="#c9963b" stroke-width="1" fill="none"/>
+      <path d="M100,76 Q104,66 108,74" stroke="#c9963b" stroke-width="1" fill="none"/>
+      <path d="M146,44 Q150,34 154,42" stroke="#c9963b" stroke-width="1" fill="none"/>
+      <path d="M196,34 Q200,24 204,32" stroke="#c9963b" stroke-width="1" fill="none"/>
+      <path d="M242,36 Q244,26 248,34" stroke="#c9963b" stroke-width="1" fill="none"/>
+      <path d="M274,76 Q278,66 282,74" stroke="#c9963b" stroke-width="1" fill="none"/>
+    </svg>
+  </div>
+  <div class="loader-name" id="loader-name">Huda</div>
+  <div class="loader-sub"  id="loader-sub">Mehndi Artist</div>
+</div>
+
+<!-- ══ CURSOR ══ -->
+<div class="cursor"      id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<!-- Henna hand cursor (shows on hover of clickable elements) -->
+<img class="cursor-henna" id="cursor-henna"
+     src="https://cdn-icons-png.flaticon.com/512/1927/1927078.png"
+     alt="" style="position:fixed;pointer-events:none;z-index:9997;"/>
+
+<!-- ══ NAV ══ -->
+<nav id="main-nav">
+  <a href="#hero" class="nav-logo">Huda</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#collaborations">Collabs</a></li>
+    <li><a href="#contact">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════
+     HERO
+═══════════════════════════════════ -->
+<section id="hero">
+  <!-- Rotating mandala BG -->
+  <svg class="hero-mandala" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="#c9963b" stroke-width="0.8">
+      <circle cx="200" cy="200" r="190"/>
+      <circle cx="200" cy="200" r="160"/>
+      <circle cx="200" cy="200" r="130"/>
+      <circle cx="200" cy="200" r="100"/>
+      <circle cx="200" cy="200" r="70"/>
+      <circle cx="200" cy="200" r="40"/>
+      <g transform="translate(200,200)">
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(0)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(30)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(60)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(90)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(120)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(150)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(180)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(210)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(240)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(270)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(300)"/>
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(330)"/>
+        <line x1="0" y1="-195" x2="0" y2="195" transform="rotate(0)"/>
+        <line x1="0" y1="-195" x2="0" y2="195" transform="rotate(45)"/>
+        <line x1="0" y1="-195" x2="0" y2="195" transform="rotate(90)"/>
+        <line x1="0" y1="-195" x2="0" y2="195" transform="rotate(135)"/>
+      </g>
+    </g>
+  </svg>
+
+  <p class="hero-tag" id="hero-tag">✦ Mehndi Artistry ✦</p>
+
+  <!-- Letter-by-letter name -->
+  <h1 class="hero-name" id="hero-name">
+    <span class="letter">H</span><span class="letter">u</span><span class="letter ital">d</span><span class="letter ital">a</span>
+  </h1>
+
+  <p class="hero-sub" id="hero-sub">Where tradition meets artistry</p>
+  <div class="hero-divider" id="hero-div"></div>
+  <p class="hero-desc" id="hero-desc">Crafting timeless henna stories for weddings, celebrations &amp; every moment that deserves to be adorned.</p>
+  <a href="#contact" class="hero-cta" id="hero-cta"><span>Book Your Appointment</span></a>
+
+  <div class="scroll-indicator" id="scroll-ind">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     ABOUT
+═══════════════════════════════════ -->
+<section id="about">
+  <div class="about-art reveal-left">
+    <div class="about-art-box">
+      <svg viewBox="0 0 280 380" style="width:70%;opacity:0.3" xmlns="http://www.w3.org/2000/svg">
+        <g fill="none" stroke="#c9963b" stroke-width="1.5">
+          <path d="M140,25 C192,25 232,75 232,135 C232,205 192,265 140,283 C100,265 55,210 55,135 C55,75 92,25 140,25Z"/>
+          <path d="M140,50 C184,50 214,92 214,135 C214,194 184,248 140,265 C106,248 72,198 72,135 C72,92 100,50 140,50Z"/>
+          <path d="M140,80 C118,86 102,110 108,136 C113,158 130,174 147,169 C164,164 172,146 166,129 C162,114 150,101 140,104 C130,100 122,112 126,123 C129,132 138,136 145,131"/>
+          <circle cx="140" cy="25" r="5" fill="#c9963b"/>
+          <ellipse cx="98"  cy="165" rx="16" ry="8" transform="rotate(-35 98 165)"  fill="rgba(201,150,59,.15)"/>
+          <ellipse cx="185" cy="142" rx="16" ry="8" transform="rotate(50 185 142)"  fill="rgba(201,150,59,.15)"/>
+          <ellipse cx="140" cy="248" rx="18" ry="9" fill="rgba(201,150,59,.15)"/>
+          <path d="M82,300 C112,282 168,282 198,300 C218,320 213,358 193,373 C173,388 107,388 87,373 C67,358 67,320 82,300Z"/>
+          <circle cx="140" cy="338" r="20" fill="rgba(201,150,59,.1)"/>
+          <circle cx="140" cy="338" r="8"  fill="rgba(201,150,59,.2)"/>
+        </g>
+      </svg>
+      <div class="about-photo-placeholder"><p>Huda's Portrait</p></div>
+    </div>
+    <div class="about-art-accent"></div>
+  </div>
+
+  <div>
+    <p class="about-label reveal">About the Artist</p>
+    <h2 class="about-title reveal">Art that <em>speaks</em><br>through your skin</h2>
+    <p class="about-text reveal">With over 8 years of dedication to the ancient craft of henna, Huda brings a unique fusion of traditional Moroccan, Arabic, and contemporary styles to every design.</p>
+    <p class="about-text reveal">Each piece is a conversation between the artist and your story — lovingly applied, deeply personal, and made to be remembered long after the colour fades.</p>
+    <div class="about-stats reveal">
+      <div class="stat"><div class="stat-num" data-count="800">0</div><div class="stat-label">Happy Brides</div></div>
+      <div class="stat"><div class="stat-num" data-count="8">0</div><div class="stat-label">Years Experience</div></div>
+      <div class="stat"><div class="stat-num" data-count="50">0</div><div class="stat-label">Design Styles</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     HORIZONTAL SCROLL + CONE TRAIL
+═══════════════════════════════════ -->
+<section id="pin-section">
+  <div class="pin-sticky" id="pin-sticky">
+    <span class="pin-label">✦ Signature Styles</span>
+    <span class="pin-title">Scroll to explore →</span>
+    <!-- <canvas id="cone-canvas"></canvas> -->
+
+    <!-- Cone SVG (your uploaded henna cone) -->
+    <div class="floating-cone" id="floating-cone">
+      <svg width="75" height="172" viewBox="0 0 75 172" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="coneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#e8c07a"/>
+            <stop offset="50%"  stop-color="#c9963b"/>
+            <stop offset="100%" stop-color="#8b3a10"/>
+          </linearGradient>
+          <linearGradient id="coneShine" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="rgba(255,255,255,0.25)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </linearGradient>
+        </defs>
+        <!-- Main cone body -->
+        <path d="M16,8 L59,8 L49,154 L37,168 L25,154 Z" fill="url(#coneGrad)" stroke="#c9963b" stroke-width="0.8"/>
+        <!-- Shine highlight -->
+        <path d="M16,8 L32,8 L22,154 L25,154 Z" fill="url(#coneShine)" opacity="0.6"/>
+        <!-- Tip -->
+        <ellipse cx="37" cy="168" rx="4" ry="5.5" fill="#1a0e05"/>
+        <!-- Henna drip -->
+        <path d="M35,168 Q37,176 37,180 Q37,176 39,168" fill="#3b1f0a" opacity="0.7"/>
+        <!-- Cap top -->
+        <rect x="13" y="3" width="49" height="10" rx="3" fill="#c9963b"/>
+        <rect x="19" y="0" width="37" height="8"  rx="3" fill="#e8c07a"/>
+        <!-- Spiral pattern lines on cone body -->
+        <path d="M22,24 Q37,18 52,24" stroke="rgba(26,14,5,0.35)" stroke-width="1.2" fill="none"/>
+        <path d="M23,40 Q37,34 51,40" stroke="rgba(26,14,5,0.35)" stroke-width="1.2" fill="none"/>
+        <path d="M24,56 Q37,50 50,56" stroke="rgba(26,14,5,0.35)" stroke-width="1.2" fill="none"/>
+        <path d="M25,72 Q37,66 49,72" stroke="rgba(26,14,5,0.35)" stroke-width="1.2" fill="none"/>
+        <path d="M26,88 Q37,82 48,88" stroke="rgba(26,14,5,0.35)" stroke-width="1.2" fill="none"/>
+        <path d="M27,104 Q37,98 47,104" stroke="rgba(26,14,5,0.35)" stroke-width="1.2" fill="none"/>
+        <path d="M28,120 Q37,114 46,120" stroke="rgba(26,14,5,0.35)" stroke-width="1.2" fill="none"/>
+        <!-- Decorative dots on cap -->
+        <circle cx="27" cy="4"  r="1.4" fill="rgba(26,14,5,0.5)"/>
+        <circle cx="37" cy="4"  r="1.4" fill="rgba(26,14,5,0.5)"/>
+        <circle cx="47" cy="4"  r="1.4" fill="rgba(26,14,5,0.5)"/>
+      </svg>
+    </div>
+
+    <div class="horizontal-track" id="h-track">
+      <!-- Item 1: Mandala -->
+      <div class="h-item">
+        <div class="h-design-circle">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="#e8c07a" stroke-width="1.2">
+              <circle cx="100" cy="100" r="90"/>
+              <circle cx="100" cy="100" r="70"/>
+              <circle cx="100" cy="100" r="50"/>
+              <circle cx="100" cy="100" r="20"/>
+              <circle cx="100" cy="100" r="8" fill="#c9963b" stroke="none"/>
+              <g transform="translate(100,100)">
+                <ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)"/>
+                <ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(45)"/>
+                <ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(90)"/>
+                <ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(135)"/>
+                <ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(180)"/>
+                <ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(225)"/>
+                <ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(270)"/>
+                <ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(315)"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <p class="h-item-title">Mandala Perfection</p>
+        <p class="h-item-sub">Bridal ✦ Full Hand</p>
+      </div>
+
+      <!-- Item 2: Arabic Florals -->
+      <div class="h-item">
+        <div class="h-design-circle">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="#e8c07a" stroke-width="1.2">
+              <path d="M100,30 C130,45 155,70 160,100 C165,130 150,160 130,175 C110,190 80,185 60,170 C40,155 30,125 35,100 C40,70 60,45 100,30Z"/>
+              <path d="M80,80 Q100,60 120,80 Q140,100 120,120 Q100,140 80,120 Q60,100 80,80Z" fill="rgba(201,150,59,.15)"/>
+              <circle cx="100" cy="100" r="10" fill="#c9963b" stroke="none"/>
+              <path d="M60,60 Q75,45 90,60 Q80,75 65,70Z" fill="rgba(201,150,59,.25)"/>
+              <path d="M140,60 Q125,45 110,60 Q120,75 135,70Z" fill="rgba(201,150,59,.25)"/>
+            </g>
+          </svg>
+        </div>
+        <p class="h-item-title">Arabic Florals</p>
+        <p class="h-item-sub">Traditional ✦ Arm Spread</p>
+      </div>
+
+      <!-- Item 3: Cone art -->
+      <div class="h-item">
+        <div class="h-design-circle">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="cg2" cx="40%" cy="40%">
+                <stop offset="0%" stop-color="#e8c07a" stop-opacity=".5"/>
+                <stop offset="100%" stop-color="#a0421d" stop-opacity=".2"/>
+              </radialGradient>
+            </defs>
+            <path d="M70,20 L130,20 L115,170 L100,185 L85,170Z" fill="url(#cg2)" stroke="#e8c07a" stroke-width="1.2"/>
+            <rect x="67" y="12" width="66" height="14" rx="4" fill="#c9963b" opacity=".7"/>
+            <path d="M78,38 Q100,32 122,38" stroke="rgba(255,240,200,.5)" stroke-width="1" fill="none"/>
+            <path d="M80,55 Q100,49 120,55" stroke="rgba(255,240,200,.5)" stroke-width="1" fill="none"/>
+            <path d="M82,72 Q100,66 118,72" stroke="rgba(255,240,200,.5)" stroke-width="1" fill="none"/>
+            <path d="M84,89 Q100,83 116,89" stroke="rgba(255,240,200,.5)" stroke-width="1" fill="none"/>
+            <ellipse cx="100" cy="187" rx="5" ry="7" fill="#3b1f0a" opacity=".6"/>
+          </svg>
+        </div>
+        <p class="h-item-title">The Sacred Cone</p>
+        <p class="h-item-sub">Natural Henna ✦ Organic</p>
+      </div>
+
+      <!-- Item 4: Paisley -->
+      <div class="h-item">
+        <div class="h-design-circle">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="#e8c07a" stroke-width="1.2">
+              <path d="M100,30 C125,30 145,55 145,85 C145,120 125,145 100,155 C82,145 58,128 52,100 C44,68 62,35 100,30Z"/>
+              <path d="M100,65 C90,70 84,83 88,97 C91,108 100,115 108,111 C116,107 119,97 114,87 C111,80 104,74 100,76"/>
+              <circle cx="100" cy="28" r="4" fill="#c9963b"/>
+            </g>
+          </svg>
+        </div>
+        <p class="h-item-title">Rajasthani Paisley</p>
+        <p class="h-item-sub">Heritage ✦ Bridal Feet</p>
+      </div>
+
+      <!-- Item 5: Geometric -->
+      <div class="h-item">
+        <div class="h-design-circle">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="#e8c07a" stroke-width="1.2">
+              <rect x="50" y="50" width="100" height="100" rx="2"/>
+              <rect x="65" y="65" width="70" height="70" rx="2" stroke="rgba(232,192,122,.5)"/>
+              <line x1="50" y1="50"  x2="100" y2="100" stroke="rgba(232,192,122,.3)"/>
+              <line x1="150" y1="50" x2="100" y2="100" stroke="rgba(232,192,122,.3)"/>
+              <line x1="50" y1="150" x2="100" y2="100" stroke="rgba(232,192,122,.3)"/>
+              <line x1="150" y1="150" x2="100" y2="100" stroke="rgba(232,192,122,.3)"/>
+              <circle cx="100" cy="100" r="25" fill="rgba(201,150,59,.15)"/>
+              <circle cx="100" cy="100" r="5"  fill="#c9963b"/>
+              <circle cx="50"  cy="50"  r="4"  fill="#c9963b" stroke="none"/>
+              <circle cx="150" cy="50"  r="4"  fill="#c9963b" stroke="none"/>
+              <circle cx="50"  cy="150" r="4"  fill="#c9963b" stroke="none"/>
+              <circle cx="150" cy="150" r="4"  fill="#c9963b" stroke="none"/>
+            </g>
+          </svg>
+        </div>
+        <p class="h-item-title">Modern Geometric</p>
+        <p class="h-item-sub">Contemporary ✦ Back Hand</p>
+      </div>
+
+      <!-- Item 6: Floral Vine -->
+      <div class="h-item">
+        <div class="h-design-circle">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="#e8c07a" stroke-width="1.2">
+              <path d="M30,100 Q60,60 100,80 Q140,100 160,70 Q175,50 185,100" stroke="#e8c07a" stroke-width="2"/>
+              <circle cx="100" cy="80" r="18" fill="rgba(201,150,59,.15)"/>
+              <circle cx="100" cy="80" r="4"  fill="#c9963b"/>
+              <ellipse cx="60" cy="72" rx="10" ry="6" transform="rotate(-30 60 72)" fill="rgba(201,150,59,.2)"/>
+              <circle cx="60"  cy="130" r="12" fill="rgba(201,150,59,.1)"/>
+              <circle cx="60"  cy="130" r="4"  fill="#c9963b"/>
+              <circle cx="140" cy="125" r="12" fill="rgba(201,150,59,.1)"/>
+              <circle cx="140" cy="125" r="4"  fill="#c9963b"/>
+            </g>
+          </svg>
+        </div>
+        <p class="h-item-title">Floral Vine</p>
+        <p class="h-item-sub">Festive ✦ Full Arm</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SERVICES
+═══════════════════════════════════ -->
+<section id="services">
+  <div class="section-header">
+    <span class="section-tag reveal">✦ What I Offer</span>
+    <h2 class="section-title reveal">Services crafted<br>with <em>devotion</em></h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal"><span class="service-num">01</span><span class="service-icon">💍</span><h3 class="service-name">Bridal Mehndi</h3><p class="service-desc">Full bridal package — both hands, arms, and feet — with intricate traditional or fusion designs. Includes a trial session.</p><span class="service-price">Starting ₹5,000</span></div>
+    <div class="service-card reveal"><span class="service-num">02</span><span class="service-icon">🌸</span><h3 class="service-name">Party &amp; Festive</h3><p class="service-desc">Perfect for Eid, Diwali, baby showers &amp; all celebrations. Quick, beautiful designs for the whole family.</p><span class="service-price">Starting ₹800</span></div>
+    <div class="service-card reveal"><span class="service-num">03</span><span class="service-icon">🌿</span><h3 class="service-name">Arabic Mehndi</h3><p class="service-desc">Bold floral and leafy patterns in the classic Arabic tradition — dramatic, spaced, and deeply elegant.</p><span class="service-price">Starting ₹1,200</span></div>
+    <div class="service-card reveal"><span class="service-num">04</span><span class="service-icon">✨</span><h3 class="service-name">Glitter &amp; Gems</h3><p class="service-desc">Add sparkle with gold/silver glitter, rhinestones and jewel embellishments for a luxe finish.</p><span class="service-price">Starting ₹1,500</span></div>
+    <div class="service-card reveal"><span class="service-num">05</span><span class="service-icon">🏠</span><h3 class="service-name">Home Visits</h3><p class="service-desc">I come to you! Available for home appointments, hotels, and venues across the city.</p><span class="service-price">+ Travel fee</span></div>
+    <div class="service-card reveal"><span class="service-num">06</span><span class="service-icon">🎨</span><h3 class="service-name">Custom Design</h3><p class="service-desc">Collaborate on a one-of-a-kind design that tells your unique story — a name, symbol, your love language.</p><span class="service-price">Starting ₹2,000</span></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     GALLERY / PORTFOLIO
+═══════════════════════════════════ -->
+<section id="gallery">
+  <div class="section-header">
+    <span class="section-tag reveal">✦ Portfolio</span>
+    <h2 class="section-title reveal">The art speaks<br>for <em>itself</em></h2>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item tall reveal-scale">
+      <div class="gallery-item-inner">
+        <svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.5" opacity=".5"><circle cx="150" cy="150" r="120"/><circle cx="150" cy="150" r="90"/><circle cx="150" cy="150" r="60"/><circle cx="150" cy="150" r="10" fill="#c9963b" stroke="none"/><g transform="translate(150,150)"><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)"/><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)" transform="rotate(60)"/><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)" transform="rotate(120)"/><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)" transform="rotate(180)"/><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)" transform="rotate(240)"/><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)" transform="rotate(300)"/></g><path d="M100,310 C130,290 170,290 200,310 C220,330 220,370 200,385 C180,400 120,400 100,385 C80,370 80,330 100,310Z"/><circle cx="150" cy="350" r="20" fill="rgba(201,150,59,.15)"/></g></svg>
+      </div>
+      <div class="gallery-overlay"><span class="gallery-caption">Full Bridal — Arabic &amp; Mandala Fusion</span></div>
+    </div>
+    <div class="gallery-item reveal-scale">
+      <div class="gallery-item-inner"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.5" opacity=".5"><path d="M100,20 C135,20 160,50 160,90 C160,130 135,165 100,175 C65,165 40,130 40,90 C40,50 65,20 100,20Z"/><circle cx="100" cy="90" r="8" fill="#c9963b" stroke="none"/></g></svg></div>
+      <div class="gallery-overlay"><span class="gallery-caption">Paisley Bridal Feet</span></div>
+    </div>
+    <div class="gallery-item reveal-scale">
+      <div class="gallery-item-inner"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.5" opacity=".5"><rect x="30" y="30" width="140" height="140" rx="2"/><circle cx="100" cy="100" r="30" fill="rgba(201,150,59,.12)"/><circle cx="100" cy="100" r="6" fill="#c9963b"/></g></svg></div>
+      <div class="gallery-overlay"><span class="gallery-caption">Modern Geometric</span></div>
+    </div>
+    <div class="gallery-item wide reveal-scale">
+      <div class="gallery-item-inner"><svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.3" opacity=".45"><path d="M20,100 Q80,60 140,100 Q200,140 260,100 Q320,60 380,100 Q440,140 480,100" stroke="#c9963b" stroke-width="2"/><circle cx="140" cy="100" r="30" fill="rgba(201,150,59,.12)"/><circle cx="140" cy="100" r="7" fill="#c9963b"/><circle cx="360" cy="100" r="30" fill="rgba(201,150,59,.12)"/><circle cx="360" cy="100" r="7" fill="#c9963b"/></g></svg></div>
+      <div class="gallery-overlay"><span class="gallery-caption">Both Hands — Floral Vine Cascade</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     RECENT WORK — Instagram Slider
+═══════════════════════════════════ -->
+<section id="recent-work">
+  <div class="section-header">
+    <span class="section-tag reveal">✦ Fresh from the Studio</span>
+    <h2 class="section-title reveal">Recent <em>Work</em></h2>
+  </div>
+
+  <div class="slider-wrapper">
+    <div class="slider-track" id="slider-track">
+      <!-- 8 Instagram-style posts -->
+      <div class="slide-item">
+        <div class="slide-item-inner">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><circle cx="100" cy="100" r="80"/><circle cx="100" cy="100" r="55"/><circle cx="100" cy="100" r="28"/><circle cx="100" cy="100" r="8" fill="#c9963b" stroke="none"/><g transform="translate(100,100)"><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)"/><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)" transform="rotate(60)"/><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)" transform="rotate(120)"/><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)" transform="rotate(180)"/><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)" transform="rotate(240)"/><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)" transform="rotate(300)"/></g></g></svg>
+        </div>
+        <div class="slide-overlay"><p class="slide-caption">Bridal Mandala</p><p class="slide-likes">❤️ 2.4k likes</p></div>
+      </div>
+
+      <div class="slide-item">
+        <div class="slide-item-inner">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><path d="M100,25 C130,25 155,55 155,90 C155,130 130,160 100,170 C70,160 45,130 45,90 C45,55 70,25 100,25Z"/><path d="M100,55 C88,60 80,76 84,95 C87,108 97,118 107,113 C117,108 121,96 115,83 C112,74 104,65 100,68"/><circle cx="100" cy="24" r="5" fill="#c9963b"/></g></svg>
+        </div>
+        <div class="slide-overlay"><p class="slide-caption">Arabic Paisley</p><p class="slide-likes">❤️ 1.8k likes</p></div>
+      </div>
+
+      <div class="slide-item">
+        <div class="slide-item-inner">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><path d="M40,100 Q70,55 100,80 Q130,105 160,60 Q175,38 185,100" stroke-width="2.2"/><circle cx="100" cy="80" r="20" fill="rgba(201,150,59,.12)"/><circle cx="100" cy="80" r="6" fill="#c9963b"/><ellipse cx="68" cy="65" rx="10" ry="5" transform="rotate(-25 68 65)" fill="rgba(201,150,59,.2)"/><ellipse cx="155" cy="68" rx="10" ry="5" transform="rotate(15 155 68)" fill="rgba(201,150,59,.2)"/></g></svg>
+        </div>
+        <div class="slide-overlay"><p class="slide-caption">Vine Trail</p><p class="slide-likes">❤️ 3.1k likes</p></div>
+      </div>
+
+      <div class="slide-item">
+        <div class="slide-item-inner">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><rect x="40" y="40" width="120" height="120" rx="2"/><rect x="55" y="55" width="90" height="90"  rx="2" stroke="rgba(232,192,122,.4)"/><circle cx="100" cy="100" r="32" fill="rgba(201,150,59,.12)"/><circle cx="100" cy="100" r="7" fill="#c9963b"/><line x1="40" y1="40" x2="100" y2="100" stroke="rgba(232,192,122,.3)"/><line x1="160" y1="40" x2="100" y2="100" stroke="rgba(232,192,122,.3)"/></g></svg>
+        </div>
+        <div class="slide-overlay"><p class="slide-caption">Geometric Back Hand</p><p class="slide-likes">❤️ 2.0k likes</p></div>
+      </div>
+
+      <div class="slide-item">
+        <div class="slide-item-inner">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><circle cx="100" cy="100" r="85"/><circle cx="100" cy="100" r="62"/><circle cx="100" cy="100" r="38"/><circle cx="100" cy="100" r="12" fill="rgba(201,150,59,.2)"/><circle cx="100" cy="100" r="5"  fill="#c9963b" stroke="none"/><g transform="translate(100,100)"><line x1="0" y1="-88" x2="0" y2="88" stroke="rgba(232,192,122,.3)"/><line x1="-88" y1="0" x2="88" y2="0" stroke="rgba(232,192,122,.3)"/><line x1="-62" y1="-62" x2="62" y2="62" stroke="rgba(232,192,122,.2)"/><line x1="62" y1="-62" x2="-62" y2="62" stroke="rgba(232,192,122,.2)"/></g></g></svg>
+        </div>
+        <div class="slide-overlay"><p class="slide-caption">Full Mandala</p><p class="slide-likes">❤️ 4.2k likes</p></div>
+      </div>
+
+      <div class="slide-item">
+        <div class="slide-item-inner">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><path d="M100,30 C115,30 130,50 130,75 C130,105 115,128 100,135 C85,128 70,105 70,75 C70,50 85,30 100,30Z"/><path d="M100,55 C95,60 90,70 92,82 C94,91 100,97 106,94 C112,91 114,83 110,74 C108,68 103,62 100,64"/><circle cx="100" cy="29" r="4" fill="#c9963b"/><ellipse cx="55"  cy="120" rx="30" ry="12" transform="rotate(-40 55 120)"  fill="rgba(201,150,59,.12)" stroke="#e8c07a"/><ellipse cx="145" cy="118" rx="30" ry="12" transform="rotate(40 145 118)"  fill="rgba(201,150,59,.12)" stroke="#e8c07a"/></g></svg>
+        </div>
+        <div class="slide-overlay"><p class="slide-caption">Paisley &amp; Leaves</p><p class="slide-likes">❤️ 1.5k likes</p></div>
+      </div>
+
+      <div class="slide-item">
+        <div class="slide-item-inner">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><path d="M30,160 Q50,80 100,60 Q150,40 170,100 Q190,160 140,180 Q100,195 60,175Z"/><circle cx="100" cy="115" r="28" fill="rgba(201,150,59,.12)"/><circle cx="100" cy="115" r="8"  fill="#c9963b" stroke="none"/><ellipse cx="62"  cy="78"  rx="12" ry="6" transform="rotate(-35 62 78)"  fill="rgba(201,150,59,.2)"/><ellipse cx="148" cy="72"  rx="12" ry="6" transform="rotate(35 148 72)"  fill="rgba(201,150,59,.2)"/></g></svg>
+        </div>
+        <div class="slide-overlay"><p class="slide-caption">Floral Spread</p><p class="slide-likes">❤️ 2.7k likes</p></div>
+      </div>
+
+      <div class="slide-item">
+        <div class="slide-item-inner">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><circle cx="100" cy="100" r="75"/><circle cx="100" cy="100" r="52"/><circle cx="100" cy="100" r="28"/><circle cx="100" cy="100" r="10" fill="rgba(201,150,59,.2)"/><circle cx="100" cy="100" r="4"  fill="#c9963b" stroke="none"/><g transform="translate(100,100)"><ellipse cx="0" cy="-42" rx="7" ry="17" fill="rgba(201,150,59,.25)"/><ellipse cx="0" cy="-42" rx="7" ry="17" fill="rgba(201,150,59,.25)" transform="rotate(45)"/><ellipse cx="0" cy="-42" rx="7" ry="17" fill="rgba(201,150,59,.25)" transform="rotate(90)"/><ellipse cx="0" cy="-42" rx="7" ry="17" fill="rgba(201,150,59,.25)" transform="rotate(135)"/><ellipse cx="0" cy="-42" rx="7" ry="17" fill="rgba(201,150,59,.25)" transform="rotate(180)"/><ellipse cx="0" cy="-42" rx="7" ry="17" fill="rgba(201,150,59,.25)" transform="rotate(225)"/><ellipse cx="0" cy="-42" rx="7" ry="17" fill="rgba(201,150,59,.25)" transform="rotate(270)"/><ellipse cx="0" cy="-42" rx="7" ry="17" fill="rgba(201,150,59,.25)" transform="rotate(315)"/></g></g></svg>
+        </div>
+        <div class="slide-overlay"><p class="slide-caption">Eid Special</p><p class="slide-likes">❤️ 5.0k likes</p></div>
+      </div>
+
+      <!-- Duplicate for infinite feel -->
+      <div class="slide-item">
+        <div class="slide-item-inner"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><circle cx="100" cy="100" r="80"/><circle cx="100" cy="100" r="55"/><circle cx="100" cy="100" r="8" fill="#c9963b" stroke="none"/><g transform="translate(100,100)"><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)"/><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)" transform="rotate(72)"/><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)" transform="rotate(144)"/><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)" transform="rotate(216)"/><ellipse cx="0" cy="-44" rx="6" ry="13" fill="rgba(201,150,59,.3)" transform="rotate(288)"/></g></g></svg></div>
+        <div class="slide-overlay"><p class="slide-caption">Bridal Feet</p><p class="slide-likes">❤️ 3.3k likes</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slider-cta-wrap">
+    <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="btn-instagram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      <span>Follow on Instagram</span>
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════ -->
+<section id="testimonials">
+  <div class="testi-bg-text">Huda</div>
+  <div class="section-header">
+    <span class="section-tag reveal">✦ Client Love</span>
+    <h2 class="section-title reveal">Words that <em>warm</em><br>my heart</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testi-card reveal"><div class="testi-quote">"</div><p class="testi-text">Huda did my bridal mehndi and I was absolutely blown away. Every guest kept asking who the artist was — her work is truly exceptional.</p><div class="testi-stars">★★★★★</div><div class="testi-name">Fatima A.</div><div class="testi-occasion">Bride, Nikah Ceremony</div></div>
+    <div class="testi-card reveal"><div class="testi-quote">"</div><p class="testi-text">She came to our home for Eid and did mehndi for 8 of us — children and adults. So patient, so talented. We'll call her every year!</p><div class="testi-stars">★★★★★</div><div class="testi-name">Zara M.</div><div class="testi-occasion">Family Eid Celebration</div></div>
+    <div class="testi-card reveal"><div class="testi-quote">"</div><p class="testi-text">The design Huda created for my sangeet was beyond my imagination. She listened to every idea and turned it into something magical.</p><div class="testi-stars">★★★★★</div><div class="testi-name">Priya R.</div><div class="testi-occasion">Sangeet Night</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     PROCESS (How It Works)
+═══════════════════════════════════ -->
+<section id="process">
+  <div class="section-header">
+    <span class="section-tag reveal">✦ How It Works</span>
+    <h2 class="section-title reveal">Your journey to<br><em>beautiful</em> begins here</h2>
+  </div>
+  <div class="process-steps">
+    <div class="step reveal"><div class="step-num">01</div><h3 class="step-title">Reach Out</h3><p class="step-desc">Contact me via WhatsApp or the form below. Tell me about your event and vision.</p></div>
+    <div class="step reveal"><div class="step-num">02</div><h3 class="step-title">Consultation</h3><p class="step-desc">We chat about your preferred style, occasion, and customise the design together.</p></div>
+    <div class="step reveal"><div class="step-num">03</div><h3 class="step-title">Appointment</h3><p class="step-desc">I arrive at your venue or you visit me — relaxed, comfortable, and exciting.</p></div>
+    <div class="step reveal"><div class="step-num">04</div><h3 class="step-title">Glow &amp; Go</h3><p class="step-desc">Leave with stunning henna and care instructions for the deepest, darkest stain.</p></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     COLLABORATIONS (animated cone + cards)
+═══════════════════════════════════ -->
+<section id="collaborations">
+  <div class="collab-sticky">
+    <canvas id="collab-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+
+    <!-- Henna cone for collab section -->
+    <div id="collab-cone" style="position:absolute;top:0;left:0;">
+      <svg width="90" height="210" viewBox="0 0 90 210" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ccg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#e8c07a"/>
+            <stop offset="60%"  stop-color="#c9963b"/>
+            <stop offset="100%" stop-color="#8b3a10"/>
+          </linearGradient>
+        </defs>
+        <path d="M20,10 L70,10 L58,190 L45,205 L32,190 Z" fill="url(#ccg)" stroke="#c9963b" stroke-width="1"/>
+        <ellipse cx="45" cy="205" rx="5" ry="7" fill="#1a0e05"/>
+        <rect x="17" y="4" width="56" height="12" rx="3" fill="#c9963b"/>
+        <rect x="24" y="0" width="42" height="9"  rx="3" fill="#e8c07a"/>
+        <path d="M27,28 Q45,20 63,28" stroke="rgba(26,14,5,.35)" stroke-width="1.3" fill="none"/>
+        <path d="M28,46 Q45,38 62,46" stroke="rgba(26,14,5,.35)" stroke-width="1.3" fill="none"/>
+        <path d="M29,64 Q45,56 61,64" stroke="rgba(26,14,5,.35)" stroke-width="1.3" fill="none"/>
+        <path d="M30,82 Q45,74 60,82" stroke="rgba(26,14,5,.35)" stroke-width="1.3" fill="none"/>
+        <path d="M31,100 Q45,92 59,100" stroke="rgba(26,14,5,.35)" stroke-width="1.3" fill="none"/>
+        <path d="M32,118 Q45,110 58,118" stroke="rgba(26,14,5,.35)" stroke-width="1.3" fill="none"/>
+        <path d="M33,136 Q45,128 57,136" stroke="rgba(26,14,5,.35)" stroke-width="1.3" fill="none"/>
+        <path d="M34,154 Q45,146 56,154" stroke="rgba(26,14,5,.35)" stroke-width="1.3" fill="none"/>
+      </svg>
+    </div>
+
+    <!-- Center title -->
+    <div class="collab-center-title">
+      <p class="section-tag">✦ Featured Collaborations</p>
+      <h2>Adorned alongside<br><em>the best</em></h2>
+    </div>
+
+    <!-- Left cards -->
+    <div class="collab-card left" style="top:15%;">
+      <div class="collab-card-img">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.5"><circle cx="100" cy="100" r="80"/><circle cx="100" cy="100" r="55"/><circle cx="100" cy="100" r="8" fill="#c9963b" stroke="none"/><g transform="translate(100,100)"><ellipse cx="0" cy="-44" rx="7" ry="17" fill="rgba(201,150,59,.3)"/><ellipse cx="0" cy="-44" rx="7" ry="17" fill="rgba(201,150,59,.3)" transform="rotate(60)"/><ellipse cx="0" cy="-44" rx="7" ry="17" fill="rgba(201,150,59,.3)" transform="rotate(120)"/><ellipse cx="0" cy="-44" rx="7" ry="17" fill="rgba(201,150,59,.3)" transform="rotate(180)"/><ellipse cx="0" cy="-44" rx="7" ry="17" fill="rgba(201,150,59,.3)" transform="rotate(240)"/><ellipse cx="0" cy="-44" rx="7" ry="17" fill="rgba(201,150,59,.3)" transform="rotate(300)"/></g></g></svg>
+      </div>
+      <div class="collab-card-body">
+        <span class="collab-card-tag">✦ Celebrity Collab</span>
+        <div class="collab-card-name">Noor Fatima</div>
+        <p class="collab-card-desc">"Huda's bridal mehndi for my nikah was breathtaking — each stroke felt intentional and spiritual."</p>
+      </div>
+    </div>
+
+    <div class="collab-card left" style="top:55%;">
+      <div class="collab-card-img">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.5"><path d="M100,25 C125,25 148,52 148,85 C148,122 125,150 100,160 C75,150 52,122 52,85 C52,52 75,25 100,25Z"/><path d="M100,52 C88,58 80,76 84,96 C87,110 97,120 108,115 C119,110 122,97 116,84 C112,74 104,64 100,67"/><circle cx="100" cy="24" r="5" fill="#c9963b"/></g></svg>
+      </div>
+      <div class="collab-card-body">
+        <span class="collab-card-tag">✦ Influencer Feature</span>
+        <div class="collab-card-name">Zoya Mirza</div>
+        <p class="collab-card-desc">"Featured my Eid mehndi to 500k followers — the DMs haven't stopped since. Pure artistry!"</p>
+      </div>
+    </div>
+
+    <!-- Right cards -->
+    <div class="collab-card right" style="top:10%;">
+      <div class="collab-card-img">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.5"><rect x="35" y="35" width="130" height="130" rx="2"/><rect x="52" y="52" width="96" height="96"  rx="2" stroke="rgba(201,150,59,.4)"/><circle cx="100" cy="100" r="35" fill="rgba(201,150,59,.1)"/><circle cx="100" cy="100" r="8"  fill="#c9963b"/><line x1="35" y1="35" x2="100" y2="100" stroke="rgba(201,150,59,.3)"/><line x1="165" y1="35" x2="100" y2="100" stroke="rgba(201,150,59,.3)"/></g></svg>
+      </div>
+      <div class="collab-card-body">
+        <span class="collab-card-tag">✦ Fashion Week</span>
+        <div class="collab-card-name">Lakmé Fashion Week</div>
+        <p class="collab-card-desc">"Huda was our official mehndi artist for the bridal showcase — flawless execution under pressure."</p>
+      </div>
+    </div>
+
+    <div class="collab-card right" style="top:50%;">
+      <div class="collab-card-img">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.5"><path d="M35,100 Q60,55 100,75 Q140,95 165,55 Q178,35 190,100" stroke-width="2.2"/><circle cx="100" cy="75" r="22" fill="rgba(201,150,59,.12)"/><circle cx="100" cy="75" r="6"  fill="#c9963b"/><ellipse cx="60" cy="60" rx="12" ry="6" transform="rotate(-28 60 60)" fill="rgba(201,150,59,.2)"/></g></svg>
+      </div>
+      <div class="collab-card-body">
+        <span class="collab-card-tag">✦ Magazine Feature</span>
+        <div class="collab-card-name">Brides Today</div>
+        <p class="collab-card-desc">"Named one of Mumbai's top 10 mehndi artists — Huda's fusion style is setting new trends."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     ADORNED STORIES (extra section #8)
+═══════════════════════════════════ -->
+<section id="adorned-stories">
+  <div class="section-header">
+    <span class="section-tag reveal">✦ Adorned Stories</span>
+    <h2 class="section-title reveal">Every occasion<br>deserves to be <em>remembered</em></h2>
+  </div>
+  <div class="stories-grid">
+    <div class="story-card"><div class="story-card-inner"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><circle cx="100" cy="100" r="75"/><circle cx="100" cy="100" r="5" fill="#c9963b" stroke="none"/><g transform="translate(100,100)"><ellipse cx="0" cy="-40" rx="7" ry="16" fill="rgba(201,150,59,.3)"/><ellipse cx="0" cy="-40" rx="7" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(72)"/><ellipse cx="0" cy="-40" rx="7" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(144)"/><ellipse cx="0" cy="-40" rx="7" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(216)"/><ellipse cx="0" cy="-40" rx="7" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(288)"/></g></g></svg></div><div class="story-overlay"><span class="story-tag">Bridal</span><div class="story-label">The Nikah Story</div></div></div>
+    <div class="story-card"><div class="story-card-inner"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><path d="M100,30 C125,30 145,55 145,85 C145,115 125,138 100,148 C75,138 55,115 55,85 C55,55 75,30 100,30Z"/><circle cx="100" cy="29" r="4" fill="#c9963b"/></g></svg></div><div class="story-overlay"><span class="story-tag">Festival</span><div class="story-label">Eid Celebration</div></div></div>
+    <div class="story-card"><div class="story-card-inner"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><rect x="50" y="50" width="100" height="100" rx="2"/><circle cx="100" cy="100" r="28" fill="rgba(201,150,59,.12)"/><circle cx="100" cy="100" r="5" fill="#c9963b"/></g></svg></div><div class="story-overlay"><span class="story-tag">Engagement</span><div class="story-label">Ring Ceremony</div></div></div>
+    <div class="story-card"><div class="story-card-inner"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><path d="M30,100 Q60,60 100,80 Q140,100 160,65" stroke-width="2.2"/><circle cx="100" cy="80" r="18" fill="rgba(201,150,59,.12)"/><circle cx="100" cy="80" r="5" fill="#c9963b"/></g></svg></div><div class="story-overlay"><span class="story-tag">Sangeet</span><div class="story-label">Dance &amp; Design</div></div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     CONTACT
+═══════════════════════════════════ -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-header">
+      <span class="section-tag reveal">✦ Let's Create Together</span>
+      <h2 class="section-title reveal">Book your<br><em>appointment</em></h2>
+    </div>
+    <div class="ornament reveal">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line r"></div>
+    </div>
+    <p class="about-text reveal" style="text-align:center;">Ready to adorn your hands with art? Fill in the form and I'll get back to you within 24 hours.</p>
+
+    <form class="contact-form reveal" id="contact-form" method="POST" action="contact.php">
+      <div class="form-row">
+        <div class="form-field"><label>Your Name *</label><input type="text" name="name" placeholder="e.g. Sara Khan" required/></div>
+        <div class="form-field"><label>Phone / WhatsApp *</label><input type="tel" name="phone" placeholder="+91 XXXXX XXXXX" required/></div>
+      </div>
+      <div class="form-field"><label>Email (for confirmation)</label><input type="email" name="email" placeholder="sara@example.com"/></div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Event Type *</label>
+          <select name="event" required>
+            <option value="" disabled selected>Select occasion</option>
+            <option>Bridal Mehndi</option>
+            <option>Engagement</option>
+            <option>Eid / Festival</option>
+            <option>Party / Gathering</option>
+            <option>Baby Shower</option>
+            <option>Custom Design</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Preferred Date</label><input type="date" name="date"/></div>
+      </div>
+      <div class="form-field"><label>Message *</label><textarea name="message" placeholder="Tell me about your dream design, venue, and any special wishes…" required></textarea></div>
+      <div class="form-submit"><button type="submit" class="btn-submit"><span>Send Message</span></button></div>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     FOOTER
+═══════════════════════════════════ -->
+<footer>
+  <div class="footer-name">Huda</div>
+  <p class="footer-tagline">Mehndi Artist · Adorning Lives with Ancient Art</p>
+  <div class="social-links">
+    <a href="#" class="social-link" title="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+    <a href="#" class="social-link" title="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+    <a href="#" class="social-link" title="TikTok"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+    <a href="#" class="social-link" title="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+    <a href="#" class="social-link" title="Pinterest"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></a>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Huda Mehndi Artist · All Rights Reserved · Made with ❤️</p>
+    <p style="margin-top:0.5rem;">📍 Mumbai, India &nbsp;·&nbsp; 📞 +91 XXXXX XXXXX &nbsp;·&nbsp; 📧 huda.mehndi@email.com</p>
+  </div>
+</footer>
+
+<!-- WhatsApp -->
+<a href="https://wa.me/91XXXXXXXXXX?text=Hi%20Huda!%20I'd%20like%20to%20book%20a%20mehndi%20appointment." class="wa-btn" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+<div class="wa-tip">Chat on WhatsApp</div>
+
+<!-- Script -->
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Huda — Mehndi Artist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Dancing+Script:wght@500;700&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<style>
+:root{--cream:#fdf6ec;--gold:#c9963b;--gold-light:#e8c07a;--gold-pale:#f5e6c8;--brown:#3b1f0a;--brown-mid:#6b3a1f;--rust:#a0421d;--blush:#f0d5b8;--ink:#1a0e05;--white:#fffdf9;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:auto;}
+body{background:var(--cream);color:var(--brown);font-family:'Cormorant Garamond',serif;overflow-x:hidden;cursor:none;}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;background:var(--ink);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;}
+#loader-svg{width:260px;height:260px;}
+#loader-svg circle,#loader-svg ellipse,#loader-svg line{fill:none;stroke:var(--gold);stroke-width:1.4;stroke-linecap:round;}
+.fill-gold{fill:var(--gold);stroke:none!important;}
+.loader-name{font-family:'Dancing Script',cursive;font-size:3.8rem;color:var(--gold);opacity:0;letter-spacing:.04em;}
+.loader-sub{font-family:'Josefin Sans',sans-serif;font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;color:rgba(201,150,59,.45);opacity:0;}
+
+/* ── CURSOR — mix-blend-mode difference ensures text is NEVER hidden ── */
+.cursor{position:fixed;width:10px;height:10px;background:#fff;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid #fff;border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.45;mix-blend-mode:difference;}
+
+/* noise */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.5;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:1.4rem 4rem;transition:background .4s,box-shadow .4s;}
+nav.on-dark{background:rgba(26,14,5,.88);backdrop-filter:blur(14px);box-shadow:0 1px 0 rgba(201,150,59,.18);}
+nav.on-light{background:rgba(253,246,236,.92);backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(201,150,59,.1);}
+.nav-logo{font-family:'Dancing Script',cursive;font-size:2rem;letter-spacing:.02em;text-decoration:none;transition:color .3s;}
+nav.on-dark .nav-logo{color:var(--gold-light);}
+nav:not(.on-dark) .nav-logo{color:var(--brown);}
+.nav-links{display:flex;gap:2.4rem;list-style:none;}
+.nav-links a{font-family:'Josefin Sans',sans-serif;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;transition:color .3s;}
+nav.on-dark .nav-links a{color:rgba(255,255,255,.7);}
+nav.on-dark .nav-links a:hover{color:var(--gold-light);}
+nav:not(.on-dark) .nav-links a{color:var(--brown-mid);}
+nav:not(.on-dark) .nav-links a:hover{color:var(--gold);}
+
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden;padding:0 2rem;background:var(--cream);}
+#hero::after{content:'';position:absolute;inset:0;background-image:radial-gradient(ellipse at 20% 80%,rgba(201,150,59,.12) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(160,66,29,.08) 0%,transparent 55%);pointer-events:none;}
+.hero-mandala{position:absolute;width:680px;height:680px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:.06;animation:rot 60s linear infinite;}
+@keyframes rot{to{transform:translate(-50%,-50%) rotate(360deg);}}
+.hero-tag{font-family:'Josefin Sans',sans-serif;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1.6rem;opacity:0;}
+.hero-name{font-family:'Playfair Display',serif;font-size:clamp(5rem,14vw,13rem);font-weight:900;line-height:.88;color:var(--brown);letter-spacing:-.02em;position:relative;z-index:1;}
+.hero-name .ital{font-style:italic;color:var(--rust);}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(1.1rem,2.5vw,1.6rem);font-weight:300;font-style:italic;color:var(--brown-mid);margin-top:1.4rem;letter-spacing:.06em;opacity:0;}
+.hero-divider{width:80px;height:1px;background:var(--gold);margin:2.2rem auto;opacity:0;}
+.hero-desc{font-size:1.05rem;color:var(--brown-mid);max-width:480px;line-height:1.8;opacity:0;}
+.hero-cta{margin-top:2.8rem;display:inline-block;padding:1rem 3rem;border:1.5px solid var(--gold);color:var(--gold);font-family:'Josefin Sans',sans-serif;font-size:.75rem;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;transition:all .4s;opacity:0;position:relative;overflow:hidden;background:transparent;cursor:none;}
+.hero-cta::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-101%);transition:transform .4s;z-index:0;}
+.hero-cta span{position:relative;z-index:1;}
+.hero-cta:hover{color:var(--white);}
+.hero-cta:hover::before{transform:translateX(0);}
+.scroll-indicator{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;}
+.scroll-indicator span{font-family:'Josefin Sans',sans-serif;font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);}
+.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,var(--gold),transparent);animation:sd 2s ease-in-out infinite;}
+@keyframes sd{0%,100%{opacity:0;transform:scaleY(0);transform-origin:top}50%{opacity:1;transform:scaleY(1)}}
+
+/* ── ABOUT ── */
+#about{padding:10rem 4rem;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;}
+.about-label{font-family:'Josefin Sans',sans-serif;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
+.about-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4vw,3.4rem);font-weight:700;line-height:1.15;color:var(--brown);margin-bottom:1.8rem;}
+.about-title em{font-style:italic;color:var(--rust);}
+.about-text{font-size:1.15rem;line-height:2;color:var(--brown-mid);margin-bottom:1.2rem;}
+.about-stats{display:flex;gap:3rem;margin-top:2.8rem;}
+.stat-num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:900;color:var(--gold);line-height:1;}
+.stat-label{font-family:'Josefin Sans',sans-serif;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brown-mid);margin-top:.3rem;}
+.about-art{position:relative;height:500px;}
+.about-art-box{position:absolute;width:100%;height:100%;background:linear-gradient(135deg,var(--blush) 0%,var(--gold-pale) 100%);border-radius:2px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.about-art-accent{position:absolute;bottom:-1.5rem;right:-1.5rem;width:60%;height:60%;border:2px solid var(--gold);border-radius:2px;z-index:-1;}
+.about-photo-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;color:var(--brown-mid);}
+.about-photo-placeholder p{font-family:'Josefin Sans',sans-serif;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;opacity:.5;}
+
+/* ── PIN SECTION ── */
+#pin-section{position:relative;height:500vh;}
+.pin-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;background:var(--brown);}
+.pin-label{position:absolute;top:3rem;left:4rem;font-family:'Josefin Sans',sans-serif;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-light);z-index:50;text-shadow:0 2px 12px rgba(0,0,0,.9);}
+.pin-title{position:absolute;top:3rem;right:4rem;font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,.5);z-index:50;text-shadow:0 2px 12px rgba(0,0,0,.9);}
+#cone-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:15;}
+.floating-cone{position:absolute;top:0;left:0;z-index:20;will-change:transform;filter:drop-shadow(0 8px 28px rgba(0,0,0,.7));}
+.horizontal-track{display:flex;align-items:center;gap:5vw;padding:0 8vw;will-change:transform;white-space:nowrap;}
+.h-item{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:1.5rem;white-space:normal;width:320px;}
+.h-design-circle{width:280px;height:280px;border-radius:50%;background:linear-gradient(135deg,rgba(201,150,59,.15) 0%,rgba(160,66,29,.1) 100%);border:1px solid rgba(201,150,59,.3);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;}
+.h-design-circle svg{width:75%;opacity:.88;}
+.h-item-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic;color:var(--gold-light);text-align:center;}
+.h-item-sub{font-family:'Josefin Sans',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);text-align:center;}
+
+/* ── SERVICES ── */
+#services{padding:10rem 4rem;background:var(--white);position:relative;overflow:hidden;}
+#services::before{content:'';position:absolute;top:-1px;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.section-header{text-align:center;margin-bottom:6rem;}
+.section-tag{font-family:'Josefin Sans',sans-serif;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:1rem;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3.2rem);font-weight:700;color:var(--brown);line-height:1.2;}
+.section-title em{font-style:italic;color:var(--rust);}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:1200px;margin:0 auto;}
+.service-card{background:var(--cream);padding:3.5rem 2.5rem;position:relative;overflow:hidden;transition:background .4s;}
+.service-card::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--gold);transition:width .5s;}
+.service-card:hover{background:var(--blush);}
+.service-card:hover::after{width:100%;}
+.service-num{font-family:'Playfair Display',serif;font-size:4rem;font-weight:900;color:rgba(201,150,59,.12);line-height:1;position:absolute;top:1.5rem;right:1.8rem;}
+.service-icon{font-size:2.4rem;margin-bottom:1.4rem;display:block;}
+.service-name{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--brown);margin-bottom:1rem;line-height:1.3;}
+.service-desc{font-size:1rem;line-height:1.85;color:var(--brown-mid);}
+.service-price{display:inline-block;margin-top:1.8rem;font-family:'Josefin Sans',sans-serif;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--gold-light);padding-bottom:.2rem;}
+
+/* ── GALLERY ── */
+#gallery{padding:10rem 4rem;background:var(--cream);}
+.gallery-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1.2rem;max-width:1200px;margin:4rem auto 0;}
+.gallery-item{background:var(--blush);border-radius:2px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1;}
+.gallery-item.tall{grid-row:span 2;aspect-ratio:auto;min-height:560px;}
+.gallery-item.wide{grid-column:span 2;aspect-ratio:2/1;}
+.gallery-item-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--blush),var(--gold-pale));transition:transform .6s;}
+.gallery-item:hover .gallery-item-inner{transform:scale(1.04);}
+.gallery-item-inner svg{width:55%;opacity:.4;}
+.gallery-overlay{position:absolute;inset:0;background:rgba(59,31,10,0);display:flex;align-items:flex-end;padding:1.5rem;transition:background .4s;}
+.gallery-item:hover .gallery-overlay{background:rgba(59,31,10,.4);}
+.gallery-caption{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:#fff;opacity:0;transform:translateY(8px);transition:all .4s;}
+.gallery-item:hover .gallery-caption{opacity:1;transform:translateY(0);}
+
+/* ── TESTIMONIALS ── */
+#testimonials{padding:10rem 4rem;background:var(--brown);position:relative;overflow:hidden;}
+#testimonials .section-tag{color:var(--gold-light);}
+#testimonials .section-title{color:var(--white);}
+#testimonials .section-title em{color:var(--gold-light);}
+.testi-bg-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Playfair Display',serif;font-size:20vw;font-weight:900;color:rgba(255,255,255,.02);white-space:nowrap;pointer-events:none;user-select:none;}
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;max-width:1200px;margin:5rem auto 0;}
+.testi-card{background:rgba(255,255,255,.04);border:1px solid rgba(201,150,59,.2);padding:2.5rem;}
+.testi-quote{font-size:3rem;font-family:'Playfair Display',serif;color:var(--gold);line-height:.5;margin-bottom:1.2rem;opacity:.6;}
+.testi-text{font-size:1.05rem;line-height:1.9;color:rgba(255,255,255,.65);font-style:italic;margin-bottom:1.8rem;}
+.testi-stars{color:var(--gold);font-size:.8rem;letter-spacing:.1em;margin-bottom:.8rem;}
+.testi-name{font-family:'Josefin Sans',sans-serif;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-light);}
+.testi-occasion{font-size:.85rem;color:rgba(255,255,255,.3);font-style:italic;margin-top:.2rem;}
+
+/* ── PROCESS ── */
+#process{padding:10rem 4rem;background:var(--white);}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:1200px;margin:5rem auto 0;position:relative;}
+.process-steps::before{content:'';position:absolute;top:2.8rem;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.step{padding:0 2rem;text-align:center;}
+.step-num{width:56px;height:56px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 2rem;font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);background:var(--white);position:relative;z-index:1;}
+.step-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--brown);margin-bottom:.8rem;}
+.step-desc{font-size:.95rem;line-height:1.8;color:var(--brown-mid);}
+
+/* ── CONTACT ── */
+#contact{padding:10rem 4rem;background:var(--cream);position:relative;}
+.contact-inner{max-width:700px;margin:0 auto;text-align:center;}
+.contact-form{display:flex;flex-direction:column;gap:1.4rem;margin-top:3.5rem;text-align:left;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;}
+.form-field{display:flex;flex-direction:column;gap:.4rem;}
+.form-field label{font-family:'Josefin Sans',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);}
+.form-field input,.form-field textarea,.form-field select{background:transparent;border:none;border-bottom:1px solid rgba(107,58,31,.3);padding:.7rem 0;font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--brown);outline:none;transition:border-color .3s;width:100%;cursor:none;}
+.form-field input:focus,.form-field textarea:focus,.form-field select:focus{border-bottom-color:var(--gold);}
+.form-field textarea{resize:none;height:100px;}
+.form-field select option{background:var(--cream);}
+.form-submit{margin-top:1rem;text-align:center;}
+.btn-submit{display:inline-block;padding:1.1rem 4rem;background:var(--brown);color:var(--gold-pale);font-family:'Josefin Sans',sans-serif;font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;border:none;cursor:none;position:relative;overflow:hidden;transition:color .4s;}
+.btn-submit::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-101%);transition:transform .45s;}
+.btn-submit span{position:relative;z-index:1;}
+.btn-submit:hover{color:var(--brown);}
+.btn-submit:hover::before{transform:translateX(0);}
+
+/* ── FOOTER ── */
+footer{background:var(--ink);padding:4rem 4rem 2rem;text-align:center;}
+.footer-name{font-family:'Dancing Script',cursive;font-size:3rem;color:var(--gold);margin-bottom:1rem;}
+.footer-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(255,255,255,.35);font-size:1rem;margin-bottom:2.5rem;}
+.social-links{display:flex;justify-content:center;gap:1.5rem;margin-bottom:3rem;}
+.social-link{width:44px;height:44px;border:1px solid rgba(201,150,59,.3);display:flex;align-items:center;justify-content:center;color:var(--gold-light);text-decoration:none;transition:all .3s;border-radius:50%;}
+.social-link:hover{background:var(--gold);border-color:var(--gold);color:var(--ink);transform:translateY(-3px);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:1.5rem;font-family:'Josefin Sans',sans-serif;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+
+/* WhatsApp */
+.wa-btn{position:fixed;bottom:2rem;right:2rem;width:58px;height:58px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:500;box-shadow:0 6px 24px rgba(37,211,102,.4);transition:transform .3s,box-shadow .3s;text-decoration:none;}
+.wa-btn:hover{transform:scale(1.12);box-shadow:0 10px 32px rgba(37,211,102,.55);}
+.wa-btn svg{width:30px;fill:#fff;}
+.wa-tip{position:fixed;bottom:2.8rem;right:5rem;background:var(--brown);color:var(--gold-pale);font-family:'Josefin Sans',sans-serif;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;padding:.5rem 1rem;border-radius:2px;white-space:nowrap;z-index:499;opacity:0;transform:translateX(8px);pointer-events:none;transition:all .3s;}
+.wa-btn:hover+.wa-tip{opacity:1;transform:translateX(0);}
+
+.ornament{display:flex;align-items:center;gap:1rem;justify-content:center;margin:2rem 0;}
+.ornament-line{height:1px;width:60px;background:linear-gradient(90deg,transparent,var(--gold));}
+.ornament-line.r{background:linear-gradient(90deg,var(--gold),transparent);}
+.ornament-diamond{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);}
+
+.reveal{opacity:0;transform:translateY(40px);}
+.reveal-left{opacity:0;transform:translateX(-60px);}
+.reveal-scale{opacity:0;transform:scale(.88);}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <svg id="loader-svg" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+    <circle id="lc1" cx="130" cy="130" r="120" stroke-dasharray="754" stroke-dashoffset="754"/>
+    <circle id="lc2" cx="130" cy="130" r="98"  stroke-dasharray="616" stroke-dashoffset="616"/>
+    <circle id="lc3" cx="130" cy="130" r="76"  stroke-dasharray="478" stroke-dashoffset="478"/>
+    <circle id="lc4" cx="130" cy="130" r="52"  stroke-dasharray="327" stroke-dashoffset="327"/>
+    <circle id="lc5" cx="130" cy="130" r="26"  stroke-dasharray="163" stroke-dashoffset="163"/>
+    <line id="ll1" x1="130" y1="10"  x2="130" y2="250" stroke-dasharray="240" stroke-dashoffset="240"/>
+    <line id="ll2" x1="10"  y1="130" x2="250" y2="130" stroke-dasharray="240" stroke-dashoffset="240"/>
+    <line id="ll3" x1="26"  y1="26"  x2="234" y2="234" stroke-dasharray="291" stroke-dashoffset="291"/>
+    <line id="ll4" x1="234" y1="26"  x2="26"  y2="234" stroke-dasharray="291" stroke-dashoffset="291"/>
+    <!-- 8 outer petals -->
+    <ellipse id="p1" cx="130" cy="55"  rx="10" ry="22" stroke-dasharray="204" stroke-dashoffset="204"/>
+    <ellipse id="p2" cx="130" cy="55"  rx="10" ry="22" transform="rotate(45 130 130)"  stroke-dasharray="204" stroke-dashoffset="204"/>
+    <ellipse id="p3" cx="130" cy="55"  rx="10" ry="22" transform="rotate(90 130 130)"  stroke-dasharray="204" stroke-dashoffset="204"/>
+    <ellipse id="p4" cx="130" cy="55"  rx="10" ry="22" transform="rotate(135 130 130)" stroke-dasharray="204" stroke-dashoffset="204"/>
+    <ellipse id="p5" cx="130" cy="55"  rx="10" ry="22" transform="rotate(180 130 130)" stroke-dasharray="204" stroke-dashoffset="204"/>
+    <ellipse id="p6" cx="130" cy="55"  rx="10" ry="22" transform="rotate(225 130 130)" stroke-dasharray="204" stroke-dashoffset="204"/>
+    <ellipse id="p7" cx="130" cy="55"  rx="10" ry="22" transform="rotate(270 130 130)" stroke-dasharray="204" stroke-dashoffset="204"/>
+    <ellipse id="p8" cx="130" cy="55"  rx="10" ry="22" transform="rotate(315 130 130)" stroke-dasharray="204" stroke-dashoffset="204"/>
+    <!-- 8 inner petals offset 22.5deg -->
+    <ellipse id="q1" cx="130" cy="82"  rx="7"  ry="14" transform="rotate(22.5 130 130)"  stroke-dasharray="133" stroke-dashoffset="133"/>
+    <ellipse id="q2" cx="130" cy="82"  rx="7"  ry="14" transform="rotate(67.5 130 130)"  stroke-dasharray="133" stroke-dashoffset="133"/>
+    <ellipse id="q3" cx="130" cy="82"  rx="7"  ry="14" transform="rotate(112.5 130 130)" stroke-dasharray="133" stroke-dashoffset="133"/>
+    <ellipse id="q4" cx="130" cy="82"  rx="7"  ry="14" transform="rotate(157.5 130 130)" stroke-dasharray="133" stroke-dashoffset="133"/>
+    <ellipse id="q5" cx="130" cy="82"  rx="7"  ry="14" transform="rotate(202.5 130 130)" stroke-dasharray="133" stroke-dashoffset="133"/>
+    <ellipse id="q6" cx="130" cy="82"  rx="7"  ry="14" transform="rotate(247.5 130 130)" stroke-dasharray="133" stroke-dashoffset="133"/>
+    <ellipse id="q7" cx="130" cy="82"  rx="7"  ry="14" transform="rotate(292.5 130 130)" stroke-dasharray="133" stroke-dashoffset="133"/>
+    <ellipse id="q8" cx="130" cy="82"  rx="7"  ry="14" transform="rotate(337.5 130 130)" stroke-dasharray="133" stroke-dashoffset="133"/>
+    <!-- centre dot -->
+    <circle id="lcd" cx="130" cy="130" r="7" class="fill-gold" opacity="0"/>
+  </svg>
+  <div class="loader-name" id="loader-name">Huda</div>
+  <div class="loader-sub"  id="loader-sub">Mehndi Artist</div>
+</div>
+
+<!-- CURSOR -->
+<div class="cursor"      id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#hero" class="nav-logo">Huda</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <svg class="hero-mandala" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="#c9963b" stroke-width=".8">
+      <circle cx="200" cy="200" r="190"/><circle cx="200" cy="200" r="160"/><circle cx="200" cy="200" r="130"/><circle cx="200" cy="200" r="100"/><circle cx="200" cy="200" r="70"/><circle cx="200" cy="200" r="40"/>
+      <g transform="translate(200,200)">
+        <ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(0)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(30)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(60)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(90)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(120)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(150)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(180)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(210)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(240)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(270)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(300)"/><ellipse cx="0" cy="-155" rx="12" ry="28" transform="rotate(330)"/>
+        <line x1="0" y1="-195" x2="0" y2="195" transform="rotate(0)"/><line x1="0" y1="-195" x2="0" y2="195" transform="rotate(45)"/><line x1="0" y1="-195" x2="0" y2="195" transform="rotate(90)"/><line x1="0" y1="-195" x2="0" y2="195" transform="rotate(135)"/>
+      </g>
+    </g>
+  </svg>
+  <p class="hero-tag" id="hero-tag">✦ Mehndi Artistry ✦</p>
+  <h1 class="hero-name"  id="hero-name"><span>Hu</span><span class="ital">da</span></h1>
+  <p class="hero-sub"    id="hero-sub">Where tradition meets artistry</p>
+  <div class="hero-divider" id="hero-div"></div>
+  <p class="hero-desc"   id="hero-desc">Crafting timeless henna stories for weddings, celebrations &amp; every moment that deserves to be adorned.</p>
+  <a href="#contact" class="hero-cta" id="hero-cta"><span>Book Your Appointment</span></a>
+  <div class="scroll-indicator" id="scroll-ind"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-art reveal-left">
+    <div class="about-art-box">
+      <svg viewBox="0 0 280 380" style="width:70%;opacity:.28" xmlns="http://www.w3.org/2000/svg">
+        <g fill="none" stroke="#c9963b" stroke-width="1.5">
+          <path d="M140,25 C192,25 232,75 232,135 C232,205 192,265 140,283 C100,265 55,210 55,135 C55,75 92,25 140,25 Z"/>
+          <path d="M140,50 C184,50 214,92 214,135 C214,194 184,248 140,265 C106,248 72,198 72,135 C72,92 100,50 140,50 Z"/>
+          <path d="M140,80 C118,86 102,110 108,136 C113,158 130,174 147,169 C164,164 172,146 166,129 C162,114 150,101 140,104 C130,100 122,112 126,123 C129,132 138,136 145,131"/>
+          <circle cx="140" cy="25" r="5" fill="#c9963b"/>
+          <ellipse cx="98"  cy="165" rx="16" ry="8" transform="rotate(-35 98 165)"  fill="rgba(201,150,59,.15)"/>
+          <ellipse cx="185" cy="142" rx="16" ry="8" transform="rotate(50 185 142)"  fill="rgba(201,150,59,.15)"/>
+          <ellipse cx="140" cy="248" rx="18" ry="9"                                  fill="rgba(201,150,59,.15)"/>
+          <path d="M82,300 C112,282 168,282 198,300 C218,320 213,358 193,373 C173,388 107,388 87,373 C67,358 67,320 82,300 Z"/>
+          <circle cx="140" cy="338" r="20" fill="rgba(201,150,59,.1)"/>
+          <circle cx="140" cy="338" r="8"  fill="rgba(201,150,59,.2)"/>
+        </g>
+      </svg>
+      <div class="about-photo-placeholder"><p>Huda's Portrait</p></div>
+    </div>
+    <div class="about-art-accent"></div>
+  </div>
+  <div>
+    <p class="about-label reveal">About the Artist</p>
+    <h2 class="about-title reveal">Art that <em>speaks</em><br>through your skin</h2>
+    <p class="about-text reveal">With over 8 years of dedication to the ancient craft of henna, Huda brings a unique fusion of traditional Moroccan, Arabic, and contemporary styles to every design.</p>
+    <p class="about-text reveal">Each piece is a conversation between the artist and your story — lovingly applied, deeply personal, and made to be remembered long after the colour fades.</p>
+    <div class="about-stats reveal">
+      <div class="stat"><div class="stat-num" data-count="800">0</div><div class="stat-label">Happy Brides</div></div>
+      <div class="stat"><div class="stat-num" data-count="8">0</div><div class="stat-label">Years Experience</div></div>
+      <div class="stat"><div class="stat-num" data-count="50">0</div><div class="stat-label">Design Styles</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HORIZONTAL PIN + CONE TRAIL -->
+<section id="pin-section">
+  <div class="pin-sticky" id="pin-sticky">
+    <span class="pin-label">✦ Signature Styles</span>
+    <span class="pin-title">Scroll to explore →</span>
+    <canvas id="cone-canvas"></canvas>
+    <!-- Cone -->
+    <div class="floating-cone" id="floating-cone">
+      <svg width="75" height="172" viewBox="0 0 75 172" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e8c07a"/><stop offset="100%" stop-color="#8b3a10"/></linearGradient></defs>
+        <path d="M16,8 L59,8 L49,154 L37,168 L25,154 Z" fill="url(#cg)" stroke="#c9963b" stroke-width=".8"/>
+        <ellipse cx="37" cy="168" rx="4" ry="5.5" fill="#1a0e05"/>
+        <rect x="13" y="3" width="49" height="10" rx="3" fill="#c9963b"/>
+        <rect x="19" y="0" width="37" height="8"  rx="3" fill="#e8c07a"/>
+        <path d="M22,24 Q37,18 52,24" stroke="rgba(26,14,5,.4)" stroke-width="1" fill="none"/>
+        <path d="M23,40 Q37,34 51,40" stroke="rgba(26,14,5,.4)" stroke-width="1" fill="none"/>
+        <path d="M24,56 Q37,50 50,56" stroke="rgba(26,14,5,.4)" stroke-width="1" fill="none"/>
+        <path d="M25,72 Q37,66 49,72" stroke="rgba(26,14,5,.4)" stroke-width="1" fill="none"/>
+        <path d="M26,88 Q37,82 48,88" stroke="rgba(26,14,5,.4)" stroke-width="1" fill="none"/>
+        <path d="M27,104 Q37,98 47,104" stroke="rgba(26,14,5,.4)" stroke-width="1" fill="none"/>
+        <path d="M28,120 Q37,114 46,120" stroke="rgba(26,14,5,.4)" stroke-width="1" fill="none"/>
+        <circle cx="27" cy="4"  r="1.4" fill="rgba(26,14,5,.5)"/>
+        <circle cx="37" cy="4"  r="1.4" fill="rgba(26,14,5,.5)"/>
+        <circle cx="47" cy="4"  r="1.4" fill="rgba(26,14,5,.5)"/>
+      </svg>
+    </div>
+
+    <div class="horizontal-track" id="h-track">
+      <!-- 6 items -->
+      <div class="h-item">
+        <div class="h-design-circle"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="70"/><circle cx="100" cy="100" r="50"/><circle cx="100" cy="100" r="20"/><circle cx="100" cy="100" r="8" fill="#c9963b" stroke="none"/><g transform="translate(100,100)"><ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)"/><ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(45)"/><ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(90)"/><ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(135)"/><ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(180)"/><ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(225)"/><ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(270)"/><ellipse cx="0" cy="-60" rx="8" ry="16" fill="rgba(201,150,59,.3)" transform="rotate(315)"/></g></g></svg></div>
+        <p class="h-item-title">Mandala Perfection</p><p class="h-item-sub">Bridal ✦ Full Hand</p>
+      </div>
+      <div class="h-item">
+        <div class="h-design-circle"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><path d="M100,30 C130,45 155,70 160,100 C165,130 150,160 130,175 C110,190 80,185 60,170 C40,155 30,125 35,100 C40,70 60,45 100,30 Z"/><path d="M80,80 Q100,60 120,80 Q140,100 120,120 Q100,140 80,120 Q60,100 80,80 Z" fill="rgba(201,150,59,.15)"/><circle cx="100" cy="100" r="10" fill="#c9963b" stroke="none"/><path d="M60,60 Q75,45 90,60 Q80,75 65,70 Z" fill="rgba(201,150,59,.25)"/></g></svg></div>
+        <p class="h-item-title">Arabic Florals</p><p class="h-item-sub">Traditional ✦ Arm Spread</p>
+      </div>
+      <div class="h-item">
+        <div class="h-design-circle"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="cg2" cx="40%" cy="40%"><stop offset="0%" stop-color="#e8c07a" stop-opacity=".5"/><stop offset="100%" stop-color="#a0421d" stop-opacity=".2"/></radialGradient></defs><path d="M70,20 L130,20 L115,170 L100,185 L85,170 Z" fill="url(#cg2)" stroke="#e8c07a" stroke-width="1.2"/><rect x="67" y="12" width="66" height="14" rx="4" fill="#c9963b" opacity=".7"/><path d="M78,38 Q100,32 122,38" stroke="rgba(255,240,200,.5)" stroke-width="1" fill="none"/><path d="M80,55 Q100,49 120,55" stroke="rgba(255,240,200,.5)" stroke-width="1" fill="none"/><path d="M82,72 Q100,66 118,72" stroke="rgba(255,240,200,.5)" stroke-width="1" fill="none"/><path d="M84,89 Q100,83 116,89" stroke="rgba(255,240,200,.5)" stroke-width="1" fill="none"/><ellipse cx="100" cy="187" rx="5" ry="7" fill="#3b1f0a" opacity=".6"/></svg></div>
+        <p class="h-item-title">The Sacred Cone</p><p class="h-item-sub">Natural Henna ✦ Organic</p>
+      </div>
+      <div class="h-item">
+        <div class="h-design-circle"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><path d="M100,30 C125,30 145,55 145,85 C145,120 125,145 100,155 C82,145 58,128 52,100 C44,68 62,35 100,30 Z"/><path d="M100,65 C90,70 84,83 88,97 C91,108 100,115 108,111 C116,107 119,97 114,87 C111,80 104,74 100,76"/><circle cx="100" cy="28" r="4" fill="#c9963b"/></g></svg></div>
+        <p class="h-item-title">Rajasthani Paisley</p><p class="h-item-sub">Heritage ✦ Bridal Feet</p>
+      </div>
+      <div class="h-item">
+        <div class="h-design-circle"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><rect x="50" y="50" width="100" height="100" rx="2"/><rect x="65" y="65" width="70" height="70" rx="2" stroke="rgba(232,192,122,.5)"/><line x1="50" y1="50" x2="100" y2="100" stroke="rgba(232,192,122,.3)"/><line x1="150" y1="50" x2="100" y2="100" stroke="rgba(232,192,122,.3)"/><line x1="50" y1="150" x2="100" y2="100" stroke="rgba(232,192,122,.3)"/><line x1="150" y1="150" x2="100" y2="100" stroke="rgba(232,192,122,.3)"/><circle cx="100" cy="100" r="25" fill="rgba(201,150,59,.15)"/><circle cx="100" cy="100" r="5" fill="#c9963b"/><circle cx="50"  cy="50"  r="4" fill="#c9963b" stroke="none"/><circle cx="150" cy="50"  r="4" fill="#c9963b" stroke="none"/><circle cx="50"  cy="150" r="4" fill="#c9963b" stroke="none"/><circle cx="150" cy="150" r="4" fill="#c9963b" stroke="none"/></g></svg></div>
+        <p class="h-item-title">Modern Geometric</p><p class="h-item-sub">Contemporary ✦ Back Hand</p>
+      </div>
+      <div class="h-item">
+        <div class="h-design-circle"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#e8c07a" stroke-width="1.2"><path d="M30,100 Q60,60 100,80 Q140,100 160,70 Q175,50 185,100" stroke="#e8c07a" stroke-width="2"/><circle cx="100" cy="80" r="18" fill="rgba(201,150,59,.15)"/><circle cx="100" cy="80" r="4" fill="#c9963b"/><ellipse cx="60" cy="72" rx="10" ry="6" transform="rotate(-30 60 72)" fill="rgba(201,150,59,.2)"/><circle cx="60"  cy="130" r="12" fill="rgba(201,150,59,.1)"/><circle cx="60"  cy="130" r="4"  fill="#c9963b"/><circle cx="140" cy="125" r="12" fill="rgba(201,150,59,.1)"/><circle cx="140" cy="125" r="4"  fill="#c9963b"/></g></svg></div>
+        <p class="h-item-title">Floral Vine</p><p class="h-item-sub">Festive ✦ Full Arm</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header">
+    <span class="section-tag reveal">✦ What I Offer</span>
+    <h2 class="section-title reveal">Services crafted<br>with <em>devotion</em></h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal"><span class="service-num">01</span><span class="service-icon">💍</span><h3 class="service-name">Bridal Mehndi</h3><p class="service-desc">Full bridal package — both hands, arms, and feet — with intricate traditional or fusion designs. Includes a trial session.</p><span class="service-price">Starting ₹5,000</span></div>
+    <div class="service-card reveal"><span class="service-num">02</span><span class="service-icon">🌸</span><h3 class="service-name">Party &amp; Festive</h3><p class="service-desc">Perfect for Eid, Diwali, baby showers &amp; all celebrations. Quick, beautiful designs for the whole family.</p><span class="service-price">Starting ₹800</span></div>
+    <div class="service-card reveal"><span class="service-num">03</span><span class="service-icon">🌿</span><h3 class="service-name">Arabic Mehndi</h3><p class="service-desc">Bold floral and leafy patterns in the classic Arabic tradition — dramatic, spaced, and deeply elegant.</p><span class="service-price">Starting ₹1,200</span></div>
+    <div class="service-card reveal"><span class="service-num">04</span><span class="service-icon">✨</span><h3 class="service-name">Glitter &amp; Gems</h3><p class="service-desc">Add sparkle to your henna with gold/silver glitter, rhinestones and jewel embellishments for a luxe finish.</p><span class="service-price">Starting ₹1,500</span></div>
+    <div class="service-card reveal"><span class="service-num">05</span><span class="service-icon">🏠</span><h3 class="service-name">Home Visits</h3><p class="service-desc">I come to you! Available for home appointments, hotels, and venues across the city. Relax in comfort while I create.</p><span class="service-price">+ Travel fee</span></div>
+    <div class="service-card reveal"><span class="service-num">06</span><span class="service-icon">🎨</span><h3 class="service-name">Custom Design</h3><p class="service-desc">Collaborate with me on a one-of-a-kind design that tells your unique story — a name, a symbol, your love language.</p><span class="service-price">Starting ₹2,000</span></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-header">
+    <span class="section-tag reveal">✦ Portfolio</span>
+    <h2 class="section-title reveal">The art speaks<br>for <em>itself</em></h2>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item tall reveal-scale"><div class="gallery-item-inner"><svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.5" opacity=".5"><circle cx="150" cy="150" r="120"/><circle cx="150" cy="150" r="90"/><circle cx="150" cy="150" r="60"/><circle cx="150" cy="150" r="10" fill="#c9963b" stroke="none"/><g transform="translate(150,150)"><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)"/><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)" transform="rotate(60)"/><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)" transform="rotate(120)"/><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)" transform="rotate(180)"/><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)" transform="rotate(240)"/><ellipse cx="0" cy="-75" rx="10" ry="22" fill="rgba(201,150,59,.3)" transform="rotate(300)"/></g><path d="M100,310 C130,290 170,290 200,310 C220,330 220,370 200,385 C180,400 120,400 100,385 C80,370 80,330 100,310 Z"/><circle cx="150" cy="350" r="20" fill="rgba(201,150,59,.15)"/></g></svg></div><div class="gallery-overlay"><span class="gallery-caption">Full Bridal — Arabic &amp; Mandala Fusion</span></div></div>
+    <div class="gallery-item reveal-scale"><div class="gallery-item-inner"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.5" opacity=".5"><path d="M100,20 C135,20 160,50 160,90 C160,130 135,165 100,175 C65,165 40,130 40,90 C40,50 65,20 100,20 Z"/><circle cx="100" cy="90" r="8" fill="#c9963b" stroke="none"/></g></svg></div><div class="gallery-overlay"><span class="gallery-caption">Paisley Bridal Feet</span></div></div>
+    <div class="gallery-item reveal-scale"><div class="gallery-item-inner"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.5" opacity=".5"><rect x="30" y="30" width="140" height="140" rx="2"/><circle cx="100" cy="100" r="30" fill="rgba(201,150,59,.12)"/><circle cx="100" cy="100" r="6" fill="#c9963b"/></g></svg></div><div class="gallery-overlay"><span class="gallery-caption">Modern Geometric</span></div></div>
+    <div class="gallery-item wide reveal-scale"><div class="gallery-item-inner"><svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#c9963b" stroke-width="1.3" opacity=".45"><path d="M20,100 Q80,60 140,100 Q200,140 260,100 Q320,60 380,100 Q440,140 480,100" stroke="#c9963b" stroke-width="2"/><circle cx="140" cy="100" r="30" fill="rgba(201,150,59,.12)"/><circle cx="140" cy="100" r="7" fill="#c9963b"/><circle cx="360" cy="100" r="30" fill="rgba(201,150,59,.12)"/><circle cx="360" cy="100" r="7" fill="#c9963b"/></g></svg></div><div class="gallery-overlay"><span class="gallery-caption">Both Hands — Floral Vine Cascade</span></div></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="testi-bg-text">Huda</div>
+  <div class="section-header">
+    <span class="section-tag reveal">✦ Client Love</span>
+    <h2 class="section-title reveal">Words that <em>warm</em><br>my heart</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testi-card reveal"><div class="testi-quote">"</div><p class="testi-text">Huda did my bridal mehndi and I was absolutely blown away. Every guest kept asking who the artist was — her work is truly exceptional.</p><div class="testi-stars">★★★★★</div><div class="testi-name">Fatima A.</div><div class="testi-occasion">Bride, Nikah Ceremony</div></div>
+    <div class="testi-card reveal"><div class="testi-quote">"</div><p class="testi-text">She came to our home for Eid and did mehndi for 8 of us — children and adults. So patient, so talented. We'll call her every year!</p><div class="testi-stars">★★★★★</div><div class="testi-name">Zara M.</div><div class="testi-occasion">Family Eid Celebration</div></div>
+    <div class="testi-card reveal"><div class="testi-quote">"</div><p class="testi-text">The design Huda created for my sangeet was beyond my imagination. She listened to every idea and turned it into something magical.</p><div class="testi-stars">★★★★★</div><div class="testi-name">Priya R.</div><div class="testi-occasion">Sangeet Night</div></div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-header">
+    <span class="section-tag reveal">✦ How It Works</span>
+    <h2 class="section-title reveal">Your journey to<br><em>beautiful</em> begins here</h2>
+  </div>
+  <div class="process-steps">
+    <div class="step reveal"><div class="step-num">01</div><h3 class="step-title">Reach Out</h3><p class="step-desc">Contact me via WhatsApp or the form below. Tell me about your event and vision.</p></div>
+    <div class="step reveal"><div class="step-num">02</div><h3 class="step-title">Consultation</h3><p class="step-desc">We chat about your preferred style, occasion, and customise the design together.</p></div>
+    <div class="step reveal"><div class="step-num">03</div><h3 class="step-title">Appointment</h3><p class="step-desc">I arrive at your venue or you visit me — relaxed, comfortable, and exciting.</p></div>
+    <div class="step reveal"><div class="step-num">04</div><h3 class="step-title">Glow &amp; Go</h3><p class="step-desc">Leave with stunning henna and care instructions for the deepest, darkest stain.</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-header">
+      <span class="section-tag reveal">✦ Let's Create Together</span>
+      <h2 class="section-title reveal">Book your<br><em>appointment</em></h2>
+    </div>
+    <div class="ornament reveal"><div class="ornament-line"></div><div class="ornament-diamond"></div><div class="ornament-line r"></div></div>
+    <p class="about-text reveal" style="text-align:center;">Ready to adorn your hands with art? Fill in the form and I'll get back to you within 24 hours.</p>
+    <div class="contact-form reveal">
+      <div class="form-row">
+        <div class="form-field"><label>Your Name</label><input type="text" placeholder="e.g. Sara Khan"/></div>
+        <div class="form-field"><label>Phone / WhatsApp</label><input type="tel" placeholder="+91 XXXXX XXXXX"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Event Type</label><select><option value="" disabled selected>Select occasion</option><option>Bridal Mehndi</option><option>Engagement</option><option>Eid / Festival</option><option>Party / Gathering</option><option>Baby Shower</option><option>Custom Design</option></select></div>
+        <div class="form-field"><label>Preferred Date</label><input type="date"/></div>
+      </div>
+      <div class="form-field"><label>Message</label><textarea placeholder="Tell me about your dream design, venue, and any special wishes…"></textarea></div>
+      <div class="form-submit"><button class="btn-submit"><span>Send Message</span></button></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">Huda</div>
+  <p class="footer-tagline">Mehndi Artist · Adorning Lives with Ancient Art</p>
+  <div class="social-links">
+    <a href="#" class="social-link" title="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+    <a href="#" class="social-link" title="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+    <a href="#" class="social-link" title="TikTok"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+    <a href="#" class="social-link" title="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+    <a href="#" class="social-link" title="Pinterest"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></a>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Huda Mehndi Artist · All Rights Reserved · Made with ❤️</p>
+    <p style="margin-top:.5rem;">📍 Mumbai, India &nbsp;·&nbsp; 📞 +91 XXXXX XXXXX &nbsp;·&nbsp; 📧 huda.mehndi@email.com</p>
+  </div>
+</footer>
+
+<a href="https://wa.me/91XXXXXXXXXX?text=Hi%20Huda!%20I'd%20like%20to%20book%20a%20mehndi%20appointment." class="wa-btn" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+<div class="wa-tip">Chat on WhatsApp</div>
+
+<script>
+/* ════════════════════════════════
+   LOADER — draw mandala stroke by stroke
+════════════════════════════════ */
+document.body.style.overflow = 'hidden';
+
+const loaderTl = gsap.timeline({
+  onComplete() {
+    gsap.to('#loader', {
+      opacity: 0, duration: .8, ease: 'power2.inOut',
+      onComplete() {
+        document.getElementById('loader').style.display = 'none';
+        document.body.style.overflow = '';
+        initPage();
+      }
+    });
+  }
+});
+
+const D = .32, E = 'power2.inOut';
+
+// Draw from inside outward, then lines, then petals, then name
+loaderTl
+  .to('#lc5', { strokeDashoffset: 0, duration: D*1.0, ease: E })
+  .to('#lc4', { strokeDashoffset: 0, duration: D*1.3, ease: E }, '-=.08')
+  .to('#lc3', { strokeDashoffset: 0, duration: D*1.6, ease: E }, '-=.1')
+  .to('#lc2', { strokeDashoffset: 0, duration: D*1.9, ease: E }, '-=.12')
+  .to('#lc1', { strokeDashoffset: 0, duration: D*2.2, ease: E }, '-=.14')
+  .to(['#ll1','#ll2'], { strokeDashoffset: 0, duration: D, ease: E, stagger: .08 }, '-=.3')
+  .to(['#ll3','#ll4'], { strokeDashoffset: 0, duration: D, ease: E, stagger: .08 }, '-=.1')
+  .to(['#p1','#p2','#p3','#p4','#p5','#p6','#p7','#p8'],
+      { strokeDashoffset: 0, duration: D*.9, ease: E, stagger: .04 }, '-=.08')
+  .to(['#q1','#q2','#q3','#q4','#q5','#q6','#q7','#q8'],
+      { strokeDashoffset: 0, duration: D*.75, ease: E, stagger: .03 }, '-=.06')
+  .to('#lcd', { opacity: 1, scale: 1.5, duration: .28, ease: 'back.out(4)', transformOrigin:'center' })
+  .to('#lcd', { scale: 1, duration: .18 })
+  .to('#loader-name', { opacity: 1, y: 0, duration: .7, ease:'power3.out' }, '-=.1')
+  .to('#loader-sub',  { opacity: 1, duration: .5, ease:'power2.out' }, '-=.3')
+  .to({}, { duration: .55 });
+
+/* ════════════════════════════════
+   PAGE INIT
+════════════════════════════════ */
+function initPage() {
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* Lenis */
+  const lenis = new Lenis({ duration:1.4, easing: t => Math.min(1,1.001-Math.pow(2,-10*t)) });
+  function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(t => lenis.raf(t*1000));
+  gsap.ticker.lagSmoothing(0);
+
+  /* Cursor */
+  const cur  = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    gsap.to(cur,{ x:mx, y:my, duration:.08, overwrite:true });
+  });
+  (function animR(){ rx+=(mx-rx)*.12; ry+=(my-ry)*.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animR); })();
+  document.querySelectorAll('a,button,.service-card,.gallery-item').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ gsap.to(cur,{scale:2.5,duration:.3}); gsap.to(ring,{scale:1.5,opacity:.25,duration:.3}); });
+    el.addEventListener('mouseleave',()=>{ gsap.to(cur,{scale:1,duration:.3}); gsap.to(ring,{scale:1,opacity:.45,duration:.3}); });
+  });
+
+  /* Hero */
+  gsap.timeline({ defaults:{ ease:'power3.out' } })
+    .to('#hero-tag',  { opacity:1, y:0, duration:1,   delay:.2 })
+    .from('#hero-name',{ opacity:0, y:80, duration:1.2, ease:'power4.out' },'-=.5')
+    .to('#hero-sub',  { opacity:1, y:0, duration:.9 },'-=.6')
+    .to('#hero-div',  { opacity:1, duration:.7 },'-=.4')
+    .to('#hero-desc', { opacity:1, y:0, duration:.8 },'-=.3')
+    .to('#hero-cta',  { opacity:1, y:0, duration:.7 },'-=.3')
+    .to('#scroll-ind',{ opacity:1, duration:.6 },'-=.2');
+
+  gsap.to('.hero-mandala',{ yPercent:30, ease:'none',
+    scrollTrigger:{ trigger:'#hero', start:'top top', end:'bottom top', scrub:true }});
+
+  /* Generic reveals */
+  gsap.utils.toArray('.reveal').forEach(el=>{
+    gsap.to(el,{ opacity:1, y:0, duration:.9, ease:'power3.out',
+      scrollTrigger:{ trigger:el, start:'top 88%', toggleActions:'play none none none' }});
+  });
+  gsap.utils.toArray('.reveal-left').forEach(el=>{
+    gsap.to(el,{ opacity:1, x:0, duration:1, ease:'power3.out',
+      scrollTrigger:{ trigger:el, start:'top 85%', toggleActions:'play none none none' }});
+  });
+  gsap.utils.toArray('.reveal-scale').forEach((el,i)=>{
+    gsap.to(el,{ opacity:1, scale:1, duration:.9, ease:'power3.out', delay:i*.08,
+      scrollTrigger:{ trigger:el, start:'top 88%', toggleActions:'play none none none' }});
+  });
+
+  /* ─── HORIZONTAL SCROLL + CONE TRAIL ─── */
+  const sticky  = document.getElementById('pin-sticky');
+  const track   = document.getElementById('h-track');
+  const cone    = document.getElementById('floating-cone');
+  const canvas  = document.getElementById('cone-canvas');
+  const ctx     = canvas.getContext('2d');
+
+  function resizeCanvas(){
+    canvas.width  = sticky.offsetWidth;
+    canvas.height = sticky.offsetHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const getTrackW = () => track.scrollWidth - window.innerWidth;
+
+  // Trail storage
+  const pts = [];
+  let lastProg = -1;
+
+  /* Draw one henna motif at (x,y) with given size & alpha */
+  function motif(x, y, sz, alpha, seed){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = '#e8c07a';
+    ctx.lineWidth   = 1.1;
+    ctx.translate(x, y);
+    const t = seed % 4;
+    if(t===0){
+      // Mandala petals
+      ctx.beginPath(); ctx.arc(0,0,sz,0,Math.PI*2); ctx.stroke();
+      for(let a=0;a<Math.PI*2;a+=Math.PI/4){
+        ctx.save(); ctx.rotate(a);
+        ctx.beginPath(); ctx.ellipse(0,-sz*1.55,sz*.28,sz*.52,0,0,Math.PI*2);
+        ctx.fillStyle='rgba(201,150,59,.2)'; ctx.fill(); ctx.stroke();
+        ctx.restore();
+      }
+      ctx.beginPath(); ctx.arc(0,0,sz*.22,0,Math.PI*2);
+      ctx.fillStyle='#c9963b'; ctx.fill();
+    } else if(t===1){
+      // Paisley
+      ctx.beginPath();
+      ctx.moveTo(0,-sz*1.4);
+      ctx.bezierCurveTo(sz*.85,-sz*1.1, sz*1.1,-sz*.15, sz*.38,sz*.28);
+      ctx.bezierCurveTo(0,sz*.65, -sz*.55,sz*.45, -sz*.45,0);
+      ctx.bezierCurveTo(-sz*.48,-sz*.75, 0,-sz*1.4, 0,-sz*1.4);
+      ctx.fillStyle='rgba(201,150,59,.2)'; ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0,0,sz*.2,0,Math.PI*2);
+      ctx.fillStyle='#c9963b'; ctx.fill();
+    } else if(t===2){
+      // Star
+      for(let a=0;a<Math.PI*2;a+=Math.PI/3){
+        const ex=Math.cos(a)*sz*1.35, ey=Math.sin(a)*sz*1.35;
+        ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(ex,ey); ctx.stroke();
+        ctx.beginPath(); ctx.arc(ex,ey,sz*.2,0,Math.PI*2);
+        ctx.fillStyle='rgba(201,150,59,.4)'; ctx.fill();
+      }
+      ctx.beginPath(); ctx.arc(0,0,sz*.45,0,Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0,0,sz*.18,0,Math.PI*2);
+      ctx.fillStyle='#c9963b'; ctx.fill();
+    } else {
+      // Leaf cluster
+      for(let a=0;a<Math.PI*2;a+=Math.PI/3){
+        ctx.save(); ctx.rotate(a);
+        ctx.beginPath(); ctx.moveTo(0,0);
+        ctx.bezierCurveTo(sz*.55,-sz*.25, sz*1.1,sz*.12, sz,sz*.5);
+        ctx.bezierCurveTo(sz*.45,sz*.9, 0,sz*.48, 0,0);
+        ctx.fillStyle='rgba(201,150,59,.22)'; ctx.fill(); ctx.stroke();
+        ctx.restore();
+      }
+      ctx.beginPath(); ctx.arc(0,0,sz*.2,0,Math.PI*2);
+      ctx.fillStyle='#e8c07a'; ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function redrawTrail(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(pts.length<2) return;
+
+    // Vine path
+    ctx.save();
+    ctx.strokeStyle='rgba(232,192,122,.38)';
+    ctx.lineWidth=1.4;
+    ctx.setLineDash([5,7]);
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for(let i=1;i<pts.length;i++){
+      const p=pts[i-1], c=pts[i];
+      ctx.quadraticCurveTo(p.x, p.y+28*Math.sin(i*.9), (p.x+c.x)/2, c.y);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // Motifs every 6 pts
+    pts.forEach((pt,i)=>{
+      if(i%6!==0) return;
+      const age=(pts.length-i)/pts.length;
+      const alp=Math.min(.72, .15+(1-age)*.65);
+      const sz =7+(1-age)*9;
+      motif(pt.x, pt.y, sz, alp, Math.floor(i/6));
+    });
+
+    // Tiny dots in between
+    pts.forEach((pt,i)=>{
+      if(i%3!==0) return;
+      const age=(pts.length-i)/pts.length;
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y+Math.sin(i*1.1)*10, 1.8, 0, Math.PI*2);
+      ctx.fillStyle=`rgba(232,192,122,${.12+(1-age)*.28})`;
+      ctx.fill();
+    });
+  }
+
+  ScrollTrigger.create({
+    trigger: '#pin-section',
+    start: 'top top',
+    end: 'bottom bottom',
+    pin: '#pin-sticky',
+    anticipatePin: 1,
+    onUpdate(self){
+      const prog = self.progress;
+
+      // Slide horizontal track
+      gsap.set(track, { x: -getTrackW()*prog });
+
+      // Cone sweeps left → right with gentle sine wobble
+      const W  = canvas.width;
+      const H  = canvas.height;
+      const cx = -100 + prog*(W+180);        // x from -100 to W+80
+      const cy = H*.68 + Math.sin(prog*Math.PI*2.5)*28; // y gently waves
+
+      // Position cone so its TIP points downward at (cx, cy)
+      // Cone SVG: tip is at y≈168/172*height = near bottom-centre
+      // We want tip at cy, so top of cone = cy - coneHeight + tipOffset
+      const coneH = 172; const tipOffY = 160;
+      gsap.set(cone, {
+        x: cx - 37,           // 37 = half cone width to center it
+        y: cy - tipOffY,
+        rotation: Math.sin(prog*Math.PI*1.8)*8 - 3,
+        top: 0, left: 0,
+        bottom: 'auto',
+      });
+
+      // Record tip position and redraw
+      if(Math.abs(prog-lastProg)>.006){
+        lastProg = prog;
+        pts.push({ x: cx, y: cy });
+        redrawTrail();
+      }
+
+      // Nav colour
+      const nav = document.getElementById('main-nav');
+      if(prog>.015 && prog<.985) nav.className='on-dark';
+    },
+    onLeave(){ document.getElementById('main-nav').className='on-light'; },
+    onLeaveBack(){ document.getElementById('main-nav').className=''; },
+    onEnterBack(){ document.getElementById('main-nav').className='on-dark'; },
+  });
+
+  // Clear trail when scrolling back past start
+  ScrollTrigger.create({
+    trigger:'#pin-section', start:'top bottom',
+    onLeaveBack(){ pts.length=0; ctx.clearRect(0,0,canvas.width,canvas.height); lastProg=-1; }
+  });
+
+  // Stagger h-items on entry
+  gsap.from('.h-item',{ opacity:0, y:60, stagger:.1, duration:1, ease:'power3.out',
+    scrollTrigger:{ trigger:'#pin-section', start:'top 80%' }});
+
+  /* Counters */
+  gsap.utils.toArray('.stat-num').forEach(el=>{
+    const target=parseInt(el.dataset.count);
+    ScrollTrigger.create({ trigger:el, start:'top 85%', onEnter(){
+      gsap.to({val:0},{val:target,duration:2,ease:'power2.out',
+        onUpdate(){ el.textContent=Math.round(this.targets()[0].val)+'+'; }});
+    }});
+  });
+
+  /* Nav: switch to light after hero */
+  ScrollTrigger.create({ trigger:'#hero', start:'bottom top',
+    onEnter(){ const n=document.getElementById('main-nav'); if(!n.classList.contains('on-dark')) n.className='on-light'; },
+    onLeaveBack(){ document.getElementById('main-nav').className=''; }
+  });
+
+  /* Smooth nav links */
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', e=>{
+      const t=document.querySelector(a.getAttribute('href'));
+      if(t){ e.preventDefault(); lenis.scrollTo(t,{ offset:-80, duration:1.6 }); }
+    });
+  });
+
+  /* Form */
+  document.querySelector('.btn-submit').addEventListener('click',()=>{
+    alert('✨ Thank you! Huda will reach out to you within 24 hours. JazakAllah Khair!');
+  });
+}
+</script>
+</body>
+</html>
