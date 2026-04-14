@@ -9,8 +9,8 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 
 // ── Configuration ──────────────────────────────────────
-$receiver_1 = 'huda.artist@example.com';        // ← Change to real email 1
-$receiver_2 = 'huda.bookings@example.com';      // ← Change to real email 2
+$receiver_1 = 'zuber.nexgeno@gmail.com';        // ← Change to real email 1
+$receiver_2 = 'zubeir.work@gmail.com';      // ← Change to real email 2
 $site_name  = 'Huda Mehndi Artist';
 $site_email = 'noreply@huda-mehndi.com';        // ← Change to real domain email
 
@@ -30,6 +30,7 @@ $name     = clean($_POST['name']     ?? '');
 $phone    = clean($_POST['phone']    ?? '');
 $event    = clean($_POST['event']    ?? '');
 $date     = clean($_POST['date']     ?? '');
+$location = clean($_POST['Location'] ?? '');
 $message  = clean($_POST['message']  ?? '');
 $email    = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
 
@@ -38,6 +39,7 @@ $errors = [];
 if (empty($name))    $errors[] = 'Name is required';
 if (empty($phone))   $errors[] = 'Phone number is required';
 if (empty($event))   $errors[] = 'Event type is required';
+if (empty($location)) $errors[] = 'Location is required';
 if (empty($message)) $errors[] = 'Message is required';
 
 if (!empty($errors)) {
@@ -100,6 +102,10 @@ $body_huda = "
     <div class='row'>
       <div class='label'>📅 Preferred Date</div>
       <div class='value'>{$formatted_date}</div>
+    </div>
+    <div class='row'>
+      <div class='label'>📍 Location</div>
+      <div class='value'>{$location}</div>
     </div>
     <div class='msg-box'>
       <div class='label' style='margin-bottom:0.5rem;'>💬 Message</div>
