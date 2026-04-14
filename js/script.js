@@ -274,7 +274,46 @@ gsap.set(mobLinks, { opacity: 0, y: 20 });
   }
 
   /* ── CONTACT FORM + TOAST ── */
-  const form = document.getElementById("contact-form");
+  // this old js code we, will later use if purchase domainand uses resend email api
+//   const form = document.getElementById("contact-form");
+// const messageBox = document.getElementById("formMessage");
+
+// form.addEventListener("submit", async (e) => {
+//   e.preventDefault();
+
+//   const btn = form.querySelector(".btn-submit span");
+//   const originalText = btn.textContent;
+
+//   btn.textContent = "Sending...";
+//   messageBox.innerHTML = "";
+
+//   try {
+//     const res = await fetch("/api/contact", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify(Object.fromEntries(new FormData(form)))
+//     });
+
+//     const result = await res.json();
+
+//     if (result.success) {
+//       messageBox.innerHTML = `<div style="color:green;">✨ Form Submitted!','We\'ll get back to you within 24 hours.</div>`;
+//       form.reset();
+//     } else {
+//       messageBox.innerHTML = `<div style="color:red;">❌ Failed to send message</div>`;
+//     }
+
+//   } catch (err) {
+//     messageBox.innerHTML = `<div style="color:red;">❌ Error sending message</div>`;
+//   }
+
+//   btn.textContent = originalText;
+// });
+
+// New form Js Code Now using for web3Form if buys domain than will remove this and use above code with resend email api
+const form = document.getElementById("contact-form");
 const messageBox = document.getElementById("formMessage");
 
 form.addEventListener("submit", async (e) => {
@@ -287,25 +326,34 @@ form.addEventListener("submit", async (e) => {
   messageBox.innerHTML = "";
 
   try {
-    const res = await fetch("/api/contact", {
+    const formData = new FormData(form);
+
+    const res = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(Object.fromEntries(new FormData(form)))
+      body: formData
     });
 
     const result = await res.json();
 
     if (result.success) {
-      messageBox.innerHTML = `<div style="color:green;">✨ Form Submitted!','We\'ll get back to you within 24 hours.</div>`;
+      messageBox.innerHTML = `
+        <div style="color:green;">
+          ✨ Form Submitted! <br/>
+          We'll get back to you within 24 hours.
+        </div>`;
       form.reset();
     } else {
-      messageBox.innerHTML = `<div style="color:red;">❌ Failed to send message</div>`;
+      messageBox.innerHTML = `
+        <div style="color:red;">
+          ❌ Failed to send message
+        </div>`;
     }
 
   } catch (err) {
-    messageBox.innerHTML = `<div style="color:red;">❌ Error sending message</div>`;
+    messageBox.innerHTML = `
+      <div style="color:red;">
+        ❌ Error sending message
+      </div>`;
   }
 
   btn.textContent = originalText;
