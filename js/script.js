@@ -274,15 +274,18 @@ gsap.set(mobLinks, { opacity: 0, y: 20 });
   }
 
   /* ── CONTACT FORM + TOAST ── */
-  document.getElementById("contact-form").addEventListener("submit", async (e) => {
+  const form = document.getElementById("contact-form");
+const messageBox = document.getElementById("formMessage");
+
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const form = e.target;
   const btn = form.querySelector(".btn-submit span");
   const originalText = btn.textContent;
 
   btn.textContent = "Sending...";
-  
+  messageBox.innerHTML = "";
+
   try {
     const res = await fetch("/api/contact", {
       method: "POST",
@@ -295,14 +298,14 @@ gsap.set(mobLinks, { opacity: 0, y: 20 });
     const result = await res.json();
 
     if (result.success) {
-      alert("✅ Message sent successfully");
+      messageBox.innerHTML = `<div style="color:green;">✨ Form Submitted!','We\'ll get back to you within 24 hours.</div>`;
       form.reset();
     } else {
-      alert("❌ Failed to send message");
+      messageBox.innerHTML = `<div style="color:red;">❌ Failed to send message</div>`;
     }
 
   } catch (err) {
-    alert("❌ Error sending message");
+    messageBox.innerHTML = `<div style="color:red;">❌ Error sending message</div>`;
   }
 
   btn.textContent = originalText;
