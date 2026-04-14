@@ -12,20 +12,11 @@ export default async function handler(req, res) {
   try {
     // 📩 Send to YOU
     await resend.emails.send({
-      from: 'Huda <onboarding@resend.dev>',
-      to: ['zuber.nexgeno@gmail.com','zubeir.work@gmail.com'],
-      subject: `New Booking — ${name}`,
-      html: `
-        <h2>New Enquiry</h2>
-        <p><b>Name:</b> ${name}</p>
-        <p><b>Phone:</b> ${phone}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Event:</b> ${event}</p>
-        <p><b>Date:</b> ${date}</p>
-        <p><b>address:</b> ${address}</p>
-        <p><b>Message:</b> ${message}</p>
-      `
-    });
+  from: 'onboarding@resend.dev',
+  to: ['zuber.nexgeno@gmail.com'],
+  subject: `New Booking — ${name}`,
+  html: `<p>${name} - ${phone} - ${message}</p>`
+});
 
     // 📩 AUTO REPLY
     if (email) {
