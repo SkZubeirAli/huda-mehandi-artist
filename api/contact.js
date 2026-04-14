@@ -1,13 +1,13 @@
 import { Resend } from 'resend';
 
-const resend = new Resend('YOUR_API_KEY');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false });
   }
 
-  const { name, phone, email, event, date, Location, message } = req.body;
+  const { name, phone, email, event, date, address, message } = req.body;
 
   try {
     // 📩 Send to YOU
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         <p><b>Email:</b> ${email}</p>
         <p><b>Event:</b> ${event}</p>
         <p><b>Date:</b> ${date}</p>
-        <p><b>Location:</b> ${Location}</p>
+        <p><b>address:</b> ${address}</p>
         <p><b>Message:</b> ${message}</p>
       `
     });
