@@ -274,45 +274,38 @@ gsap.set(mobLinks, { opacity: 0, y: 20 });
   }
 
   /* ── CONTACT FORM + TOAST ── */
-  document.getElementById('contact-form').addEventListener('submit',async function(e){
-    e.preventDefault();
-    const btn=this.querySelector('.btn-submit');
-    const orig=btn.querySelector('span').textContent;
-    btn.querySelector('span').textContent='Sending…';btn.disabled=true;
-    try{
-      const res=await fetch('contact.php',{method:'POST',body:new FormData(this)});
-      const j=await res.json();
-      j.success?showToast('✨ Form Submitted!','We\'ll get back to you within 24 hours.'):showToast('⚠️ Oops',j.message||'Please try again.');
-      if(j.success)this.reset();
-    }catch{
-      showToast('✨ Form Submitted!','We\'ll get back to you within 24 hours.');
-      this.reset();
-    }
-    btn.querySelector('span').textContent=orig;btn.disabled=false;
-  });
-
   document.getElementById("contact-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const form = e.target;
-  const data = Object.fromEntries(new FormData(form));
+  const btn = form.querySelector(".btn-submit span");
+  const originalText = btn.textContent;
 
-  const res = await fetch("/api/contact.js", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  });
+  btn.textContent = "Sending...";
+  
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(Object.fromEntries(new FormData(form)))
+    });
 
-  const result = await res.json();
+    const result = await res.json();
 
-  if (result.success) {
-    alert("Message sent successfully ✨");
-    form.reset();
-  } else {
-    alert("Something went wrong ❌");
+    if (result.success) {
+      alert("✅ Message sent successfully");
+      form.reset();
+    } else {
+      alert("❌ Failed to send message");
+    }
+
+  } catch (err) {
+    alert("❌ Error sending message");
   }
+
+  btn.textContent = originalText;
 });
 
 // ✨ Form Submitted!','We\'ll get back to you within 24 hours.
