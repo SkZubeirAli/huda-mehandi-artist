@@ -396,6 +396,26 @@ footer{background:var(--ink);padding:clamp(3rem,6vw,4rem) clamp(1.5rem,4vw,4rem)
   .h-item{width:220px;}
   .h-design-circle{width:180px;height:180px;}
   .collab-grid{grid-template-columns:1fr 1fr;}
+  .wa-btn svg {
+    width: 24px;
+  }
+  .wa-btn {
+    position: fixed;
+    bottom: 4.8rem;
+    right: 0.8rem;
+    width: 48px;
+    height: 48px;
+  }
+  #back-to-top {
+    bottom: 2rem;
+    right: 1rem;
+    width: 35px;
+    height: 35px;
+  }
+  .footer_contact {
+    display: flex;
+    flex-direction: column;
+}
 }
 @media(max-width:480px){
   .masonry-grid{column-count:1;}
